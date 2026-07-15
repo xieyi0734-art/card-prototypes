@@ -70,10 +70,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC
 .btn-outline:hover{border-color:#FFCA00;color:#FFCA00}
 .btn-sm{padding:6px 12px;font-size:12px}
 .btn-xs{padding:4px 8px;font-size:11px;border-radius:6px}
-.btn-danger{background:#dc2626;color:#fff}
-.btn-danger:hover{background:#b91c1c}
-.btn-warning{background:#d97706;color:#fff}
-.btn-warning:hover{background:#b45309}
 .btn-success{background:#16a34a;color:#fff}
 .btn-success:hover{background:#15803d}
 
@@ -91,21 +87,99 @@ table tr:last-child td{border-bottom:none}
 .badge-frozen{background:rgba(217,119,6,.15);color:#fbbf24}
 .badge-pending{background:rgba(59,130,246,.15);color:#60a5fa}
 .badge-canceled{background:rgba(220,38,38,.15);color:#f87171}
+.badge-approved{background:rgba(22,163,74,.15);color:#4ade80}
+.badge-rejected{background:rgba(220,38,38,.15);color:#f87171}
+
+.product-card .kyb-status{margin-bottom:10px}
+.badge-review{background:rgba(217,119,6,.15);color:#fbbf24}
 
 /* ===== Card Number ===== */
 .card-num{font-family:"SF Mono","Fira Code","Consolas",monospace;font-size:13px;letter-spacing:.5px}
 
-/* ===== KYB Block Page ===== */
-.kyb-block{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 40px}
-.kyb-block .icon-wrap{width:80px;height:80px;background:rgba(255,202,0,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:24px}
-.kyb-block h2{font-size:22px;font-weight:700;color:#fff;margin-bottom:8px}
-.kyb-block p{font-size:14px;color:#848493;max-width:480px;margin-bottom:32px;line-height:1.7}
-.kyb-block .btn-lg{padding:12px 32px;font-size:15px;font-weight:600;border-radius:10px}
-.kyb-step{display:flex;gap:32px;margin-top:16px;flex-wrap:wrap;justify-content:center}
-.kyb-step-item{text-align:center;width:160px}
-.kyb-step-num{width:32px;height:32px;background:rgba(255,202,0,.15);color:#FFCA00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;margin:0 auto 12px}
-.kyb-step-item .label{font-size:13px;color:#e8e8ed;font-weight:500}
-.kyb-step-item .desc{font-size:11px;color:#848493;margin-top:4px}
+/* ===== Product Card ===== */
+.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.product-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:20px;cursor:pointer;transition:all .15s}
+.product-card:hover{border-color:#FFCA00;background:rgba(255,202,0,.04)}
+.product-card .product-icon{font-size:28px;margin-bottom:10px}
+.product-card .product-name{font-size:14px;font-weight:600;color:#fff;margin-bottom:4px}
+.product-card .product-desc{font-size:12px;color:#848493;margin-bottom:12px}
+.product-card .product-info{font-size:12px;color:#e8e8ed;line-height:1.7;margin-bottom:10px;padding:8px 10px;background:rgba(255,202,0,.04);border-radius:6px;border:1px solid rgba(255,202,0,.08)}
+.product-card .product-info .product-info-hint{font-size:11px;color:#848493;margin-top:2px}
+.product-card .product-info .info-row{display:flex;justify-content:space-between;align-items:center}
+.product-card .product-info .info-row .info-val{color:#FFCA00;font-weight:600}
+
+/* ===== Modal ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto}
+.modal{background:#1f2128;border:1px solid rgba(255,255,255,.1);border-radius:14px;width:100%;max-width:620px;margin:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,.06)}
+.modal-header h3{font-size:16px;font-weight:600;color:#fff}
+.modal-close{background:none;border:none;color:#848493;font-size:18px;cursor:pointer;padding:4px}
+.modal-close:hover{color:#fff}
+.modal-body{padding:24px;max-height:60vh;overflow-y:auto}
+.modal-footer{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid rgba(255,255,255,.06)}
+
+.form-section{margin-bottom:24px}
+.form-section:last-child{margin-bottom:0}
+.form-section h4{font-size:14px;font-weight:600;color:#FFCA00;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,202,.1)}
+.form-group{margin-bottom:14px;flex:1}
+.form-group label{display:block;font-size:12px;font-weight:500;color:#a0a0b0;margin-bottom:5px}
+.form-group .required{color:#f87171}
+.form-group .form-hint{font-size:11px;color:#5a5a6a;margin-bottom:4px}
+.form-group input,.form-group select{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#e8e8ed;font-size:13px;padding:9px 12px;outline:none;transition:border .15s}
+.form-group input:focus,.form-group select:focus{border-color:#FFCA00}
+.form-group select option{background:#2c2c2c;color:#e8e8ed}
+.form-row{display:flex;gap:12px}
+.product-card .btn-primary{margin-bottom:10px}
+
+/* ===== Issue Card Modal (3 Steps) ===== */
+.issue-modal{max-width:680px}
+.steps-indicator{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:28px;padding:0 20px}
+.step-dot{display:flex;align-items:center;gap:8px;font-size:12px;color:#5a5a6a;white-space:nowrap;flex:1;justify-content:center}
+.step-dot .circle{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#5a5a6a;flex-shrink:0;transition:all .2s}
+.step-dot.active .circle{background:#FFCA00;border-color:#FFCA00;color:#000}
+.step-dot.done .circle{background:rgba(22,163,74,.2);border-color:#4ade80;color:#4ade80}
+.step-dot .step-label{font-size:12px;color:#5a5a6a}
+.step-dot.active .step-label{color:#FFCA00;font-weight:600}
+.step-dot.done .step-label{color:#4ade80}
+.step-connector{flex:0 0 40px;height:2px;background:rgba(255,255,255,.1);min-width:20px}
+.step-connector.done{background:#4ade80}
+.step-connector.active{background:#FFCA00}
+
+.step-panel{display:none}
+.step-panel.active{display:block}
+
+/* Step nav buttons */
+.step-nav{display:flex;justify-content:space-between;gap:10px;padding:16px 24px;border-top:1px solid rgba(255,255,255,.06)}
+.step-nav .btn-back{background:transparent;border:1px solid rgba(255,255,255,.15);color:#848493;padding:9px 20px;border-radius:8px;font-size:13px;cursor:pointer}
+.step-nav .btn-back:hover{border-color:#FFCA00;color:#FFCA00}
+.step-nav .btn-next{background:#FFCA00;color:#000;padding:9px 24px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.step-nav .btn-next:hover{background:#e6b500}
+
+/* Step 2: quantity + payment */
+.qty-row{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.qty-row label{font-size:13px;color:#a0a0b0;font-weight:500;white-space:nowrap}
+.qty-input{width:90px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#e8e8ed;font-size:15px;font-weight:600;padding:9px 12px;outline:none;text-align:center}
+.qty-input:focus{border-color:#FFCA00}
+.qty-note{font-size:11px;color:#5a5a6a;margin-left:4px}
+.crypto-option{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;cursor:pointer;transition:all .15s;margin-bottom:8px}
+.crypto-option:hover,.crypto-option.selected{border-color:#FFCA00;background:rgba(255,202,0,.06)}
+.crypto-option .radio-dot{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.crypto-option.selected .radio-dot{border-color:#FFCA00}
+.crypto-option.selected .radio-dot::after{content:'';width:10px;height:10px;border-radius:50%;background:#FFCA00}
+.crypto-option .crypto-info{flex:1}
+.crypto-option .crypto-name{font-size:13px;font-weight:600;color:#fff}
+.crypto-option .crypto-chain{font-size:11px;color:#5a5a6a}
+.crypto-option .crypto-amount{font-size:12px;color:#848493;white-space:nowrap}
+
+/* Step 3: terms */
+.terms-box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:16px;margin-bottom:16px;max-height:200px;overflow-y:auto;font-size:12px;color:#848493;line-height:1.7}
+.terms-box h5{color:#e8e8ed;font-size:13px;margin-bottom:8px}
+.terms-box ul{padding-left:16px}
+.terms-box ul li{margin-bottom:4px}
+.agreement-group{display:flex;align-items:flex-start;gap:10px;padding:12px 0}
+.agreement-group input[type="checkbox"]{width:18px;height:18px;accent-color:#FFCA00;margin-top:2px;cursor:pointer;flex-shrink:0}
+.agreement-group label{font-size:13px;color:#a0a0b0;cursor:pointer;line-height:1.5}
+.agreement-group label strong{color:#e8e8ed}
 </style>
 </head>
 <body>
@@ -145,33 +219,655 @@ table tr:last-child td{border-bottom:none}
 
     <!-- Content -->
     <div class="content">
-      <!-- ===== KYB未完成：引导页 ===== -->
+      <!-- Stats Bar -->
+      <div class="stats-row">
+        <div class="stat-card" style="position:relative">
+          <div class="label">总卡片</div>
+          <div class="value">5</div>
+          <div class="sub">总持卡数 · 正常 3 · 冻结 1 · 注销 1</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">总余额</div>
+          <div class="value gold">$246,800.00</div>
+          <div class="sub">全部卡片资产</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">总消费</div>
+          <div class="value gold">-$145,230.00</div>
+          <div class="sub">全部卡片支出</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">总充值</div>
+          <div class="value gold">$7,500.00</div>
+          <div class="sub">本月累计</div>
+        </div>
+      </div>
+
+      <!-- Card Section -->
       <div class="card">
-        <div class="kyb-block">
-          <div class="icon-wrap">🔐</div>
-          <h2>企业认证未完成</h2>
-          <p>使用卡片服务前，您需要先完成企业认证（KYB）。认证通过后即可开启开卡、充值、消费管理等全部功能。</p>
-          <button class="btn btn-primary btn-lg">立即去认证</button>
-          <div class="kyb-step">
-            <div class="kyb-step-item">
-              <div class="kyb-step-num">1</div>
-              <div class="label">提交企业资料</div>
-              <div class="desc">填写企业信息并上传证件</div>
+        <div class="card-header">
+          <h2>卡片管理</h2>
+        </div>
+        <div class="card-body">
+          <!-- Tabs -->
+          <div class="tabs">
+            <div class="tab active">交易记录</div>
+            <div class="tab">我的卡片</div>
+            <div class="tab">卡产品</div>
+          </div>
+
+          <!-- ===== Tab 1: 交易记录 ===== -->
+          <div id="tab-transactions">
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+              <input type="text" placeholder="搜索卡号后4位...">
+              <select>
+                <option value="">全部类型</option>
+                <option>消费</option>
+                <option>充值</option>
+                <option>退款</option>
+                <option>费用</option>
+              </select>
+              <select>
+                <option value="">全部状态</option>
+                <option>成功</option>
+                <option>处理中</option>
+                <option>失败</option>
+              </select>
+              <button class="btn btn-outline btn-sm">搜索</button>
+              <button class="btn btn-outline btn-sm">重置</button>
+              <button class="btn btn-outline btn-sm" style="margin-left:auto">📥 导出</button>
             </div>
-            <div class="kyb-step-item">
-              <div class="kyb-step-num">2</div>
-              <div class="label">平台审核</div>
-              <div class="desc">YASBe 审核企业资质</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>卡号</th>
+                  <th>卡产品</th>
+                  <th>持卡人</th>
+                  <th>交易类型</th>
+                  <th>金额</th>
+                  <th>商户名称</th>
+                  <th>时间</th>
+                  <th>状态</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="card-num">**** **** **** 4523</span></td>
+                  <td>Visa 商务卡</td>
+                  <td>张三</td>
+                  <td>消费</td>
+                  <td style="color:#f87171">-$150.00</td>
+                  <td>Amazon Web Services</td>
+                  <td>2026-07-14 14:32</td>
+                  <td><span class="badge badge-approved">成功</span></td>
+                </tr>
+                <tr>
+                  <td><span class="card-num">**** **** **** 4523</span></td>
+                  <td>Visa 商务卡</td>
+                  <td>张三</td>
+                  <td>充值</td>
+                  <td style="color:#4ade80">+$2,000.00</td>
+                  <td>—</td>
+                  <td>2026-07-12 09:15</td>
+                  <td><span class="badge badge-approved">成功</span></td>
+                </tr>
+                <tr>
+                  <td><span class="card-num">**** **** **** 7812</span></td>
+                  <td>Mastercard 企业卡</td>
+                  <td>李四</td>
+                  <td>消费</td>
+                  <td style="color:#f87171">-$45.80</td>
+                  <td>Stripe Inc.</td>
+                  <td>2026-07-11 16:48</td>
+                  <td><span class="badge badge-approved">成功</span></td>
+                </tr>
+                <tr>
+                  <td><span class="card-num">**** **** **** 3356</span></td>
+                  <td>Visa 商务卡</td>
+                  <td>张三</td>
+                  <td>充值</td>
+                  <td style="color:#4ade80">+$500.00</td>
+                  <td>—</td>
+                  <td>2026-07-10 10:00</td>
+                  <td><span class="badge badge-pending">处理中</span></td>
+                </tr>
+                <tr>
+                  <td><span class="card-num">**** **** **** 9012</span></td>
+                  <td>Mastercard 企业卡</td>
+                  <td>王五</td>
+                  <td>消费</td>
+                  <td style="color:#f87171">-$1,200.00</td>
+                  <td>Apple Inc.</td>
+                  <td>2026-07-08 11:22</td>
+                  <td><span class="badge badge-canceled">失败</span></td>
+                </tr>
+                <tr>
+                  <td><span class="card-num">**** **** **** 7812</span></td>
+                  <td>Mastercard 企业卡</td>
+                  <td>李四</td>
+                  <td>退款</td>
+                  <td style="color:#4ade80">+$30.00</td>
+                  <td>Stripe Inc.</td>
+                  <td>2026-07-07 08:30</td>
+                  <td><span class="badge badge-approved">成功</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- ===== Tab 2: 我的卡片 ===== -->
+          <div id="tab-cards" style="display:none">
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+              <input type="text" placeholder="搜索卡号后4位或持卡人姓名...">
+              <select>
+                <option value="">全部状态</option>
+                <option>待激活</option>
+                <option>已激活</option>
+                <option>已冻结</option>
+                <option>已注销</option>
+              </select>
+              <button class="btn btn-outline btn-sm">搜索</button>
+              <button class="btn btn-outline btn-sm">重置</button>
             </div>
-            <div class="kyb-step-item">
-              <div class="kyb-step-num">3</div>
-              <div class="label">发卡方认证</div>
-              <div class="desc">上游机构额外审核</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>卡片号码</th>
+                  <th>卡产品</th>
+                  <th>持卡人</th>
+                  <th>余额</th>
+                  <th>可用余额</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="card-num">**** **** **** 4523</span></td>
+                  <td>Visa 商务卡</td>
+                  <td>张三</td>
+                  <td>$5,000.00</td>
+                  <td>$4,850.00</td>
+                  <td><span class="badge badge-active">已激活</span></td>
+                  <td><button class="btn btn-outline btn-xs">详情</button><button class="btn btn-outline btn-xs">冻结</button></td>
+                </tr>
+                <tr>
+                  <td><span class="card-num">**** **** **** 7812</span></td>
+                  <td>Mastercard 企业卡</td>
+                  <td>李四</td>
+                  <td>$2,300.00</td>
+                  <td>$2,100.00</td>
+                  <td><span class="badge badge-active">已激活</span></td>
+                  <td><button class="btn btn-outline btn-xs">详情</button><button class="btn btn-outline btn-xs">冻结</button></td>
+                </tr>
+                <tr>
+                  <td><span class="card-num">**** **** **** 3356</span></td>
+                  <td>Visa 商务卡</td>
+                  <td>张三</td>
+                  <td>$0.00</td>
+                  <td>$0.00</td>
+                  <td><span class="badge badge-pending">待激活</span></td>
+                  <td><button class="btn btn-outline btn-xs">详情</button><button class="btn btn-success btn-xs" onclick="openActivateModal('**** **** **** 3356','Visa 商务卡')">激活</button></td>
+                </tr>
+                <tr>
+                  <td><span class="card-num">**** **** **** 9012</span></td>
+                  <td>Mastercard 企业卡</td>
+                  <td>王五</td>
+                  <td>$1,200.00</td>
+                  <td>$0.00</td>
+                  <td><span class="badge badge-frozen">已冻结</span></td>
+                  <td><button class="btn btn-outline btn-xs">详情</button><button class="btn btn-outline btn-xs">解冻</button></td>
+                </tr>
+                <tr>
+                  <td><span class="card-num">**** **** **** 6678</span></td>
+                  <td>Visa 商务卡</td>
+                  <td>赵六</td>
+                  <td>$0.00</td>
+                  <td>$0.00</td>
+                  <td><span class="badge badge-canceled">已注销</span></td>
+                  <td><button class="btn btn-outline btn-xs">详情</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- ===== Tab 3: 卡产品 ===== -->
+          <div id="tab-kyb" style="display:none">
+            <div class="product-grid">
+              <div class="product-card">
+                <div class="product-icon">💳</div>
+                <div class="product-name">Visa 商务卡</div>
+                <div class="product-desc">适用于日常商务消费和差旅管理</div>
+                <div class="product-info">
+                  <div>支持的币种：USDT USDC</div>
+                  <div class="info-row"><span>开卡费用</span><span class="info-val">$5.00</span></div>
+                  <div class="info-row"><span>首次激活充值金额</span><span class="info-val">$100.00</span></div>
+                  <div class="product-info-hint">每种 BIN 方案的详细限额和规则，请参考卡类型说明。</div>
+                </div>
+                <div class="kyb-status"><span class="badge badge-approved">已授权</span></div>
+                <button class="btn btn-primary btn-sm" onclick="openIssueModal()">立即开卡</button>
+
+              </div>
+              <div class="product-card">
+                <div class="product-icon">💳</div>
+                <div class="product-name">Mastercard 企业卡</div>
+                <div class="product-desc">适合大额采购和供应链支付</div>
+                <div class="product-info">
+                  <div>支持的币种：USDT USDC</div>
+                  <div class="info-row"><span>开卡费用</span><span class="info-val">$5.00</span></div>
+                  <div class="info-row"><span>首次激活充值金额</span><span class="info-val">$100.00</span></div>
+                  <div class="product-info-hint">每种 BIN 方案的详细限额和规则，请参考卡类型说明。</div>
+                </div>
+                <div class="kyb-status"><span class="badge badge-review">审核中</span></div>
+
+              </div>
+              <div class="product-card">
+                <div class="product-icon">💳</div>
+                <div class="product-name">Visa 预付卡</div>
+                <div class="product-desc">预充值消费卡，适合员工福利和奖励</div>
+                <div class="product-info">
+                  <div>支持的币种：USDT USDC</div>
+                  <div class="info-row"><span>开卡费用</span><span class="info-val">$5.00</span></div>
+                  <div class="info-row"><span>首次激活充值金额</span><span class="info-val">$100.00</span></div>
+                  <div class="product-info-hint">每种 BIN 方案的详细限额和规则，请参考卡类型说明。</div>
+                </div>
+                <div class="kyb-status"><span class="badge badge-inactive">未授权</span></div>
+                <button class="btn btn-primary btn-sm" onclick="openKybModal('Visa 预付卡', this)">卡片授权</button>
+
+              </div>
+              <div class="product-card">
+                <div class="product-icon">💳</div>
+                <div class="product-name">Amex 企业卡</div>
+                <div class="product-desc">高端商务消费，专属权益和积分</div>
+                <div class="product-info">
+                  <div>支持的币种：USDT USDC</div>
+                  <div class="info-row"><span>开卡费用</span><span class="info-val">$5.00</span></div>
+                  <div class="info-row"><span>首次激活充值金额</span><span class="info-val">$100.00</span></div>
+                  <div class="product-info-hint">每种 BIN 方案的详细限额和规则，请参考卡类型说明。</div>
+                </div>
+                <div class="kyb-status"><span class="badge badge-rejected">授权失败</span></div>
+                <button class="btn btn-primary btn-sm" onclick="openKybModal('Amex 企业卡', this)">卡片授权</button>
+
+              </div>
             </div>
-            <div class="kyb-step-item">
-              <div class="kyb-step-num">4</div>
-              <div class="label">开启卡片服务</div>
-              <div class="desc">自由开卡与管理</div>
+          </div>
+
+          <!-- ===== KYB Modal ===== -->
+          <div id="kyb-modal-overlay" class="modal-overlay" style="display:none">
+            <div class="modal">
+              <div class="modal-header">
+                <h3 id="kyb-modal-title">卡片授权 — Visa 商务卡</h3>
+                <button class="modal-close" onclick="closeKybModal()">✕</button>
+              </div>
+              <div class="modal-body">
+                <form id="kyb-form">
+                  <div class="form-section">
+                    <h4>公司信息</h4>
+                    <div class="form-group">
+                      <label>公司注册名称 <span class="required">*</span></label>
+                      <input type="text" name="companyName" placeholder="请输入公司注册法定名称">
+                    </div>
+                    <div class="form-group">
+                      <label>公司注册号 <span class="required">*</span></label>
+                      <input type="text" name="registrationNumber" placeholder="EIN / 营业执照号">
+                    </div>
+                    <div class="form-group">
+                      <label>注册国家 <span class="required">*</span></label>
+                      <div class="form-hint">ISO 3166-1 alpha-2 国家代码，如 CN</div>
+                      <input type="text" name="registrationCountry" placeholder="CN" maxlength="2">
+                    </div>
+                    <div class="form-group">
+                      <label>行业分类代码 <span class="required">*</span></label>
+                      <div class="form-hint">NAICS 6 位行业分类代码</div>
+                      <input type="text" name="industry" placeholder="如 111120">
+                    </div>
+                    <div class="form-group">
+                      <label>公司官网 <span class="required">*</span></label>
+                      <input type="text" name="website" placeholder="https://www.example.com">
+                    </div>
+                  </div>
+                  <div class="form-section">
+                    <h4>最终受益人信息 (UBO)</h4>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label>名字 <span class="required">*</span></label>
+                        <input type="text" name="uboFirstName" placeholder="John">
+                      </div>
+                      <div class="form-group">
+                        <label>姓氏 <span class="required">*</span></label>
+                        <input type="text" name="uboLastName" placeholder="Smith">
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label>性别 <span class="required">*</span></label>
+                        <select name="uboGender">
+                          <option value="">请选择</option>
+                          <option value="M">男 (M)</option>
+                          <option value="F">女 (F)</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label>国籍 <span class="required">*</span></label>
+                        <div class="form-hint">ISO 3166-1 alpha-2</div>
+                        <input type="text" name="uboCountryCode" placeholder="CN" maxlength="2">
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label>证件类型 <span class="required">*</span></label>
+                        <select name="uboIdType">
+                          <option value="">请选择</option>
+                          <option value="PASSPORT">护照 (PASSPORT)</option>
+                          <option value="CN-RIC">中国居民身份证 (CN-RIC)</option>
+                          <option value="HK-HKID">香港身份证 (HK-HKID)</option>
+                          <option value="DLN">驾照 (DLN)</option>
+                          <option value="Government-Issued ID Card">政府签发身份证</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label>证件号码 <span class="required">*</span></label>
+                        <input type="text" name="uboIdNumber" placeholder="请输入证件号码">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>出生日期 <span class="required">*</span></label>
+                      <div class="form-hint">YYYY-MM-DD 格式</div>
+                      <input type="text" name="uboDob" placeholder="1990-01-01">
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeKybModal()">取消</button>
+                <button class="btn btn-primary" onclick="submitKyb()">提交授权</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== Activate Card Modal ===== -->
+          <div id="activate-modal-overlay" class="modal-overlay" style="display:none">
+            <div class="modal" style="max-width:440px">
+              <div class="modal-header">
+                <h3 id="activate-modal-title">激活卡片</h3>
+                <button class="modal-close" onclick="closeActivateModal()">✕</button>
+              </div>
+              <div class="modal-body">
+                <form id="activate-form">
+                  <div class="form-section">
+                    <h4>卡片信息</h4>
+                    <div style="background:rgba(255,255,255,.03);border-radius:8px;padding:12px 16px;margin-bottom:8px">
+                      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+                        <span style="color:#848493">卡号</span>
+                        <span style="color:#fff;font-family:monospace" id="activate-card-num">**** **** **** 3356</span>
+                      </div>
+                      <div style="display:flex;justify-content:space-between;font-size:13px">
+                        <span style="color:#848493">卡产品</span>
+                        <span style="color:#fff" id="activate-card-product">Visa 商务卡</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-section">
+                    <h4>激活设置</h4>
+                    <div class="form-group">
+                      <label>持卡人姓名</label>
+                      <input type="text" id="activate-name" placeholder="请输入持卡人真实姓名">
+                    </div>
+                    <div class="form-group">
+                      <label>持卡人邮箱</label>
+                      <input type="email" id="activate-email" placeholder="cardholder@company.com">
+                    </div>
+                    <div class="form-group">
+                      <label>首充金额 <span class="required">*</span></label>
+                      <div class="form-hint">激活后自动充值到卡片余额</div>
+                      <input type="number" id="activate-amount" placeholder="500.00" min="0" step="0.01" required>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeActivateModal()">取消</button>
+                <button class="btn btn-primary" onclick="submitActivate()">确认激活</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== Issue Card Modal (3 Steps) ===== -->
+          <div id="issue-modal-overlay" class="modal-overlay" style="display:none">
+            <div class="modal issue-modal">
+              <div class="modal-header">
+                <h3>Visa 商务卡 — 立即开卡</h3>
+                <button class="modal-close" onclick="closeIssueModal()">✕</button>
+              </div>
+
+              <!-- Steps Indicator -->
+              <div class="modal-body" style="padding-bottom:0">
+                <div class="steps-indicator">
+                  <div class="step-dot active" data-step="1">
+                    <span class="circle">1</span>
+                    <span class="step-label">开卡人信息</span>
+                  </div>
+                  <div class="step-connector"></div>
+                  <div class="step-dot" data-step="2">
+                    <span class="circle">2</span>
+                    <span class="step-label">开卡数量</span>
+                  </div>
+                  <div class="step-connector"></div>
+                  <div class="step-dot" data-step="3">
+                    <span class="circle">3</span>
+                    <span class="step-label">确认并提交</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ===== Step 1: 开卡人信息 ===== -->
+              <div id="step-1" class="step-panel active">
+                <div class="modal-body">
+                  <form id="cardholder-form">
+                    <div class="form-section">
+                      <h4>开卡人基本信息</h4>
+                      <div class="form-row">
+                        <div class="form-group">
+                          <label>名字 <span class="required">*</span></label>
+                          <input type="text" name="firstName" placeholder="John" required>
+                        </div>
+                        <div class="form-group">
+                          <label>姓氏 <span class="required">*</span></label>
+                          <input type="text" name="lastName" placeholder="Smith" required>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>邮箱 <span class="required">*</span></label>
+                        <input type="email" name="email" placeholder="user@company.com" required>
+                      </div>
+                      <div class="form-row">
+                        <div class="form-group">
+                          <label>国际区号 <span class="required">*</span></label>
+                          <div class="form-hint">不要 + 号</div>
+                          <input type="text" name="phoneCountryCode" placeholder="86" maxlength="3" required>
+                        </div>
+                        <div class="form-group">
+                          <label>手机号 <span class="required">*</span></label>
+                          <input type="text" name="phoneNumber" placeholder="13800138000" required>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>出生日期 <span class="required">*</span></label>
+                        <div class="form-hint">YYYY-MM-DD 格式</div>
+                        <input type="text" name="dob" placeholder="1990-01-01" required>
+                      </div>
+                      <div class="form-group">
+                        <label>持卡人角色 <span class="required">*</span></label>
+                        <select name="cardholderRole" required>
+                          <option value="">请选择</option>
+                          <option value="DEPARTMENT">部门 (DEPARTMENT)</option>
+                          <option value="PROJECT">项目 (PROJECT)</option>
+                          <option value="AUTHORIZED_REPRESENTATIVE">授权代表 (AUTHORIZED_REPRESENTATIVE)</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-section">
+                      <h4>地址信息</h4>
+                      <div class="form-group">
+                        <label>街道地址 <span class="required">*</span></label>
+                        <input type="text" name="addressLine1" placeholder="123 Main Street" required>
+                      </div>
+                      <div class="form-row">
+                        <div class="form-group">
+                          <label>城市 <span class="required">*</span></label>
+                          <input type="text" name="city" placeholder="New York" required>
+                        </div>
+                        <div class="form-group">
+                          <label>州/省 <span class="required">*</span></label>
+                          <input type="text" name="state" placeholder="NY" required>
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <div class="form-group">
+                          <label>国家 <span class="required">*</span></label>
+                          <div class="form-hint">ISO 3166-1 alpha-2</div>
+                          <input type="text" name="country" placeholder="US" maxlength="2" required>
+                        </div>
+                        <div class="form-group">
+                          <label>邮政编码 <span class="required">*</span></label>
+                          <input type="text" name="postalCode" placeholder="10001" required>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="step-nav">
+                  <div></div>
+                  <button class="btn-next" onclick="goStep(2)">下一步</button>
+                </div>
+              </div>
+
+              <!-- ===== Step 2: 开卡数量 + 币种链 ===== -->
+              <div id="step-2" class="step-panel">
+                <div class="modal-body">
+                  <div class="form-section">
+                    <h4>开卡数量</h4>
+                    <div class="qty-row">
+                      <label>本次开卡张数</label>
+                      <input type="number" id="issue-qty" class="qty-input" value="1" min="1" max="100" onchange="updateQtyCost()">
+                      <span class="qty-note">单次最多 100 张</span>
+                    </div>
+                    <div style="background:rgba(255,255,255,.03);border-radius:8px;padding:12px 16px;margin-bottom:16px">
+                      <div style="display:flex;justify-content:space-between;font-size:12px;color:#848493;margin-bottom:4px">
+                        <span>预估费用</span>
+                        <span id="qty-cost">≈ USDT 0.00</span>
+                      </div>
+                      <div style="font-size:11px;color:#5a5a6a">每张卡开卡费以选择的链和实际 gas 为准</div>
+                    </div>
+                    <div style="margin-bottom:8px">
+                      <label style="font-size:12px;font-weight:500;color:#a0a0b0;margin-bottom:8px;display:block">每持卡人最多 20 张卡，系统将自动创建持卡人。</label>
+                      <div id="cardholder-preview" style="background:rgba(255,202,0,.06);border:1px solid rgba(255,202,0,.15);border-radius:8px;padding:10px 14px;font-size:12px;color:#e8e8ed">
+                        <span>预计创建 <strong id="holder-count">1</strong> 个持卡人，每持卡人 <strong id="per-holder">1</strong> 张卡</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-section">
+                    <h4>选择付款方式</h4>
+                    <div class="crypto-option selected" onclick="selectPayment(this)">
+                      <div class="radio-dot"></div>
+                      <div class="crypto-info">
+                        <div class="crypto-name">USDT</div>
+                        <div class="crypto-chain">Ethereum (ERC-20)</div>
+                      </div>
+                      <div class="crypto-amount">余额: 12,500.00</div>
+                    </div>
+                    <div class="crypto-option" onclick="selectPayment(this)">
+                      <div class="radio-dot"></div>
+                      <div class="crypto-info">
+                        <div class="crypto-name">USDT</div>
+                        <div class="crypto-chain">TRON (TRC-20)</div>
+                      </div>
+                      <div class="crypto-amount">余额: 8,200.00</div>
+                    </div>
+                    <div class="crypto-option" onclick="selectPayment(this)">
+                      <div class="radio-dot"></div>
+                      <div class="crypto-info">
+                        <div class="crypto-name">USDC</div>
+                        <div class="crypto-chain">Ethereum (ERC-20)</div>
+                      </div>
+                      <div class="crypto-amount">余额: 5,000.00</div>
+                    </div>
+                    <div class="crypto-option" onclick="selectPayment(this)">
+                      <div class="radio-dot"></div>
+                      <div class="crypto-info">
+                        <div class="crypto-name">USDC</div>
+                        <div class="crypto-chain">Solana</div>
+                      </div>
+                      <div class="crypto-amount">余额: 3,200.00</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="step-nav">
+                  <button class="btn-back" onclick="goStep(1)">上一步</button>
+                  <button class="btn-next" onclick="goStep(3)">下一步</button>
+                </div>
+              </div>
+
+              <!-- ===== Step 3: 确认并提交 ===== -->
+              <div id="step-3" class="step-panel">
+                <div class="modal-body">
+                  <div class="form-section">
+                    <h4>开卡须知</h4>
+                    <div class="terms-box">
+                      <h5>卡片使用条款与条件</h5>
+                      <ul>
+                        <li>开卡费用将从您选择的加密钱包中扣除，不可退还。</li>
+                        <li>每张卡须激活（设置持卡人姓名、邮箱、首充金额）后方可使用。</li>
+                        <li>卡片使用须遵守平台用户协议及相关法律法规。</li>
+                        <li>持卡人信息须真实有效，虚假信息可能导致卡片被冻结或注销。</li>
+                        <li>开卡后无法直接退款，冻结/注销后余额可申请退回。</li>
+                        <li>每持卡人最多持 20 张卡片，超额开卡将自动分配新持卡人。</li>
+                        <li>卡片及持卡人资产仅可在平台内部转账，不可链上提现。</li>
+                      </ul>
+                    </div>
+                    <div class="agreement-group">
+                      <input type="checkbox" id="agree-terms" onclick="toggleSubmit()">
+                      <label for="agree-terms">我已阅读并同意 <strong>开卡须知</strong> 及 <strong>卡片使用条款</strong></label>
+                    </div>
+                    <div class="agreement-group">
+                      <input type="checkbox" id="agree-fee" onclick="toggleSubmit()">
+                      <label for="agree-fee">我理解并接受开卡费用将从我选择的加密钱包中 <strong>自动扣除</strong>，且不可退还</label>
+                    </div>
+                  </div>
+                  <div class="form-section">
+                    <h4>开卡摘要</h4>
+                    <div style="background:rgba(255,255,255,.03);border-radius:8px;padding:14px 16px">
+                      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px">
+                        <span style="color:#848493">卡产品</span>
+                        <span style="color:#fff;font-weight:500">Visa 商务卡</span>
+                      </div>
+                      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px">
+                        <span style="color:#848493">开卡张数</span>
+                        <span style="color:#fff;font-weight:500" id="summary-qty">1 张</span>
+                      </div>
+                      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px">
+                        <span style="color:#848493">持卡人</span>
+                        <span style="color:#fff;font-weight:500" id="summary-holder">1 个</span>
+                      </div>
+                      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px">
+                        <span style="color:#848493">付款方式</span>
+                        <span style="color:#fff;font-weight:500" id="summary-payment">USDT (ERC-20)</span>
+                      </div>
+                      <div style="display:flex;justify-content:space-between;font-size:13px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08)">
+                        <span style="color:#848493">扣款金额</span>
+                        <span style="color:#FFCA00;font-weight:700" id="summary-cost">待确认</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="step-nav">
+                  <button class="btn-back" onclick="goStep(2)">上一步</button>
+                  <button id="btn-submit-issue" class="btn-next" disabled style="opacity:.5;cursor:not-allowed" onclick="submitIssue()">确认开卡</button>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -179,5 +875,216 @@ table tr:last-child td{border-bottom:none}
     </div>
   </div>
 </div>
+
+<script>
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('tab-transactions').style.display = 'none';
+    document.getElementById('tab-cards').style.display = 'none';
+    document.getElementById('tab-kyb').style.display = 'none';
+    const idx = Array.from(this.parentElement.children).indexOf(this);
+    if(idx === 0) document.getElementById('tab-transactions').style.display = '';
+    if(idx === 1) document.getElementById('tab-cards').style.display = '';
+    if(idx === 2) document.getElementById('tab-kyb').style.display = '';
+  });
+});
+
+// KYB Modal
+function openKybModal(productName, btn) {
+  document.getElementById('kyb-modal-title').textContent = '卡片授权 — ' + productName;
+  document.getElementById('kyb-modal-overlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeKybModal() {
+  document.getElementById('kyb-modal-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function submitKyb() {
+  const form = document.getElementById('kyb-form');
+  const inputs = form.querySelectorAll('input, select');
+  let valid = true;
+  inputs.forEach(inp => {
+    if(!inp.value.trim()) valid = false;
+  });
+  if(!valid) {
+    alert('请填写所有必填字段');
+    return;
+  }
+  alert('KYB 授权已提交，等待审核中');
+  closeKybModal();
+}
+
+// Close modal on overlay click
+document.getElementById('kyb-modal-overlay').addEventListener('click', function(e) {
+  if(e.target === this) closeKybModal();
+});
+
+// ===== Activate Card Modal =====
+function openActivateModal(cardNum, productName) {
+  document.getElementById('activate-card-num').textContent = cardNum;
+  document.getElementById('activate-card-product').textContent = productName;
+  document.getElementById('activate-modal-overlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  document.getElementById('activate-amount').value = '';
+}
+
+function closeActivateModal() {
+  document.getElementById('activate-modal-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function submitActivate() {
+  const amount = document.getElementById('activate-amount').value.trim();
+  if(!amount) {
+    alert('请输入首充金额');
+    return;
+  }
+  alert('卡片已激活！\n首充金额: $' + parseFloat(amount).toFixed(2) + '\n\n卡片现已可用。');
+  closeActivateModal();
+}
+
+document.getElementById('activate-modal-overlay').addEventListener('click', function(e) {
+  if(e.target === this) closeActivateModal();
+});
+
+// ===== Issue Card Modal (3 Steps) =====
+let currentStep = 1;
+
+function openIssueModal() {
+  currentStep = 1;
+  document.getElementById('issue-modal-overlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  showStep(1);
+  document.getElementById('issue-qty').value = 1;
+  updateQtyCost();
+  // Reset checkboxes
+  document.getElementById('agree-terms').checked = false;
+  document.getElementById('agree-fee').checked = false;
+  toggleSubmit();
+  // Reset payment selection
+  document.querySelectorAll('.crypto-option').forEach((el, i) => {
+    el.classList.toggle('selected', i === 0);
+  });
+}
+
+function closeIssueModal() {
+  document.getElementById('issue-modal-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function showStep(step) {
+  currentStep = step;
+  // Panels
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('step-' + step).classList.add('active');
+  // Step indicator
+  document.querySelectorAll('.step-dot').forEach(d => {
+    d.classList.remove('active', 'done');
+    const s = parseInt(d.dataset.step);
+    if(s === step) d.classList.add('active');
+    else if(s < step) d.classList.add('done');
+  });
+  // Connectors
+  document.querySelectorAll('.step-connector').forEach((c, i) => {
+    c.classList.remove('active', 'done');
+    if(i + 1 < step) c.classList.add('done');
+    else if(i + 1 === step) c.classList.add('active');
+  });
+  // Update summary on step 3
+  if(step === 3) updateSummary();
+}
+
+function goStep(step) {
+  // Validate step 1 fields before going to step 2
+  if(step === 2 && currentStep === 1) {
+    const form = document.getElementById('cardholder-form');
+    const inputs = form.querySelectorAll('[required]');
+    let valid = true;
+    inputs.forEach(inp => {
+      if(!inp.value.trim()) valid = false;
+    });
+    if(!valid) {
+      alert('请填写所有必填字段');
+      return;
+    }
+  }
+  // Validate step 2 before going to step 3
+  if(step === 3 && currentStep === 2) {
+    const qty = parseInt(document.getElementById('issue-qty').value) || 0;
+    if(qty < 1 || qty > 100) {
+      alert('开卡张数须在 1-100 之间');
+      return;
+    }
+  }
+  showStep(step);
+}
+
+function selectPayment(el) {
+  document.querySelectorAll('.crypto-option').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  updateQtyCost();
+}
+
+function updateQtyCost() {
+  const qty = parseInt(document.getElementById('issue-qty').value) || 0;
+  const fee = qty * 2.5;
+  document.getElementById('qty-cost').textContent = '≈ USDT ' + fee.toFixed(2);
+  // Cardholder preview
+  const holders = Math.ceil(qty / 20);
+  const perHolder = Math.min(qty, 20);
+  document.getElementById('holder-count').textContent = holders;
+  document.getElementById('per-holder').textContent = Math.min(qty, 20);
+}
+
+function toggleSubmit() {
+  const terms = document.getElementById('agree-terms').checked;
+  const fee = document.getElementById('agree-fee').checked;
+  const btn = document.getElementById('btn-submit-issue');
+  if(terms && fee) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  } else {
+    btn.disabled = true;
+    btn.style.opacity = '.5';
+    btn.style.cursor = 'not-allowed';
+  }
+}
+
+function updateSummary() {
+  const qty = parseInt(document.getElementById('issue-qty').value) || 0;
+  const holders = Math.ceil(qty / 20);
+  const fee = qty * 2.5;
+  document.getElementById('summary-qty').textContent = qty + ' 张';
+  document.getElementById('summary-holder').textContent = holders + ' 个';
+  // Get selected payment
+  const selected = document.querySelector('.crypto-option.selected');
+  const paymentName = selected ? selected.querySelector('.crypto-name').textContent + ' (' + selected.querySelector('.crypto-chain').textContent + ')' : '-';
+  document.getElementById('summary-payment').textContent = paymentName;
+  document.getElementById('summary-cost').textContent = 'USDT ' + fee.toFixed(2);
+}
+
+function submitIssue() {
+  const qty = parseInt(document.getElementById('issue-qty').value) || 0;
+  const holders = Math.ceil(qty / 20);
+  alert('开卡申请已提交！\n' +
+    '卡产品: Visa 商务卡\n' +
+    '开卡张数: ' + qty + '\n' +
+    '创建持卡人: ' + holders + ' 个\n' +
+    '扣款金额: USDT ' + (qty * 2.5).toFixed(2) + '\n\n' +
+    '开卡完成后将以通知告知。');
+  closeIssueModal();
+}
+
+// Close issue modal on overlay click
+document.getElementById('issue-modal-overlay').addEventListener('click', function(e) {
+  if(e.target === this) closeIssueModal();
+});
+</script>
 </body>
 </html>
