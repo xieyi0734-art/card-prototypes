@@ -91,10 +91,21 @@ table tr:last-child td{border-bottom:none}
 .badge-frozen{background:rgba(217,119,6,.15);color:#fbbf24}
 .badge-pending{background:rgba(59,130,246,.15);color:#60a5fa}
 .badge-canceled{background:rgba(220,38,38,.15);color:#f87171}
-.badge-draft{background:rgba(100,116,139,.1);color:#64748b}
 
 /* ===== Card Number ===== */
 .card-num{font-family:"SF Mono","Fira Code","Consolas",monospace;font-size:13px;letter-spacing:.5px}
+
+/* ===== KYB Block Page ===== */
+.kyb-block{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 40px}
+.kyb-block .icon-wrap{width:80px;height:80px;background:rgba(255,202,0,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:24px}
+.kyb-block h2{font-size:22px;font-weight:700;color:#fff;margin-bottom:8px}
+.kyb-block p{font-size:14px;color:#848493;max-width:480px;margin-bottom:32px;line-height:1.7}
+.kyb-block .btn-lg{padding:12px 32px;font-size:15px;font-weight:600;border-radius:10px}
+.kyb-step{display:flex;gap:32px;margin-top:16px;flex-wrap:wrap;justify-content:center}
+.kyb-step-item{text-align:center;width:160px}
+.kyb-step-num{width:32px;height:32px;background:rgba(255,202,0,.15);color:#FFCA00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;margin:0 auto 12px}
+.kyb-step-item .label{font-size:13px;color:#e8e8ed;font-weight:500}
+.kyb-step-item .desc{font-size:11px;color:#848493;margin-top:4px}
 </style>
 </head>
 <body>
@@ -134,126 +145,35 @@ table tr:last-child td{border-bottom:none}
 
     <!-- Content -->
     <div class="content">
-      <!-- Stats Bar -->
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="label">总余额</div>
-          <div class="value gold">$128,450.00</div>
-          <div class="sub">所有卡片合计</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">总消费</div>
-          <div class="value">$45,230.50</div>
-          <div class="sub">本月累计</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">卡片数量</div>
-          <div class="value">24</div>
-          <div class="sub">共 3 个持卡人</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">昨日开卡</div>
-          <div class="value">5</div>
-          <div class="sub">新卡已创建</div>
-        </div>
-      </div>
-
-      <!-- Card Section -->
+      <!-- ===== KYB未完成：引导页 ===== -->
       <div class="card">
-        <div class="card-header">
-          <h2>我的卡片</h2>
-          <button class="btn btn-primary" onclick="alert('开卡流程')">+ 开卡</button>
-        </div>
-        <div class="card-body">
-          <!-- Tabs -->
-          <div class="tabs">
-            <div class="tab active">我的卡片</div>
-            <div class="tab">开卡申请</div>
+        <div class="kyb-block">
+          <div class="icon-wrap">🔐</div>
+          <h2>企业认证未完成</h2>
+          <p>使用卡片服务前，您需要先完成企业认证（KYB）。认证通过后即可开启开卡、充值、消费管理等全部功能。</p>
+          <button class="btn btn-primary btn-lg">立即去认证</button>
+          <div class="kyb-step">
+            <div class="kyb-step-item">
+              <div class="kyb-step-num">1</div>
+              <div class="label">提交企业资料</div>
+              <div class="desc">填写企业信息并上传证件</div>
+            </div>
+            <div class="kyb-step-item">
+              <div class="kyb-step-num">2</div>
+              <div class="label">平台审核</div>
+              <div class="desc">YASBe 审核企业资质</div>
+            </div>
+            <div class="kyb-step-item">
+              <div class="kyb-step-num">3</div>
+              <div class="label">发卡方认证</div>
+              <div class="desc">上游机构额外审核</div>
+            </div>
+            <div class="kyb-step-item">
+              <div class="kyb-step-num">4</div>
+              <div class="label">开启卡片服务</div>
+              <div class="desc">自由开卡与管理</div>
+            </div>
           </div>
-
-          <!-- Filter Bar -->
-          <div class="filter-bar">
-            <input type="text" placeholder="搜索卡号后4位或持卡人姓名...">
-            <select>
-              <option value="">全部状态</option>
-              <option>待激活</option>
-              <option>已激活</option>
-              <option>已冻结</option>
-              <option>已注销</option>
-            </select>
-            <button class="btn btn-outline btn-sm">搜索</button>
-            <button class="btn btn-outline btn-sm">重置</button>
-          </div>
-
-          <!-- Table -->
-          <table>
-            <thead>
-              <tr>
-                <th>卡片号码</th>
-                <th>持卡人</th>
-                <th>余额</th>
-                <th>可用余额</th>
-                <th>状态</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="card-num">**** **** **** 4523</span></td>
-                <td>张三</td>
-                <td>$5,000.00</td>
-                <td>$4,850.00</td>
-                <td><span class="badge badge-active">已激活</span></td>
-                <td>
-                  <button class="btn btn-outline btn-xs">详情</button>
-                  <button class="btn btn-warning btn-xs">冻结</button>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="card-num">**** **** **** 7812</span></td>
-                <td>李四</td>
-                <td>$2,300.00</td>
-                <td>$2,100.00</td>
-                <td><span class="badge badge-active">已激活</span></td>
-                <td>
-                  <button class="btn btn-outline btn-xs">详情</button>
-                  <button class="btn btn-warning btn-xs">冻结</button>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="card-num">**** **** **** 3356</span></td>
-                <td>张三</td>
-                <td>$0.00</td>
-                <td>$0.00</td>
-                <td><span class="badge badge-pending">待激活</span></td>
-                <td>
-                  <button class="btn btn-outline btn-xs">详情</button>
-                  <button class="btn btn-success btn-xs">激活</button>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="card-num">**** **** **** 9012</span></td>
-                <td>王五</td>
-                <td>$1,200.00</td>
-                <td>$0.00</td>
-                <td><span class="badge badge-frozen">已冻结</span></td>
-                <td>
-                  <button class="btn btn-outline btn-xs">详情</button>
-                  <button class="btn btn-outline btn-xs">解冻</button>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="card-num">**** **** **** 6678</span></td>
-                <td>赵六</td>
-                <td>$0.00</td>
-                <td>$0.00</td>
-                <td><span class="badge badge-canceled">已注销</span></td>
-                <td>
-                  <button class="btn btn-outline btn-xs">详情</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
