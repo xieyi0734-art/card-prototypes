@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YASBe - 冻结/解冻/注销</title>
+<style>
+:root {
+  --sidebar-bg: #1a1a2e;
+  --sidebar-text: #8e9ab4;
+  --sidebar-hover: #2a2a4e;
+  --header-bg: #1a2536;
+  --bg: #f0f2f5;
+  --card-bg: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #888;
+  --accent: #E59303;
+  --accent-hover: #d08400;
+  --primary: #4f46e5;
+  --primary-light: #eef2ff;
+  --success: #16a34a;
+  --success-light: #f0fdf4;
+  --danger: #dc2626;
+  --danger-light: #fef2f2;
+  --warning: #d97706;
+  --warning-light: #fffbeb;
+  --border: #e5e7eb;
+  --shadow: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.14);
+  --radius: 10px;
+  --radius-lg: 14px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+
+.app { display: flex; min-height: 100vh; }
+.sidebar { width: 220px; flex-shrink: 0; background: var(--sidebar-bg); min-height: 100vh; display: flex; flex-direction: column; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; }
+.sidebar-logo { padding: 20px 16px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,.06); }
+.logo-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: #fff; }
+.logo-text { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: .5px; }
+.sidebar-nav { flex: 1; padding: 12px 8px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: var(--sidebar-text); font-size: 13.5px; cursor: pointer; transition: all .15s; }
+.nav-item:hover { background: var(--sidebar-hover); color: #fff; }
+.nav-item.active { background: rgba(255,255,255,.1); color: #fff9c4; font-weight: 600; }
+.nav-item .icon { font-size: 16px; }
+.nav-sub { padding-left: 12px; }
+.nav-sub .nav-item { font-size: 12.5px; padding: 7px 12px; }
+.sidebar-footer { padding: 12px 16px; border-top: 1px solid rgba(255,255,255,.06); display: flex; align-items: center; gap: 10px; }
+.avatar { width: 34px; height: 34px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.user-info { overflow: hidden; }
+.user-info .name { font-size: 13px; color: #fff; font-weight: 500; }
+
+.main { margin-left: 220px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
+.top-header { background: var(--header-bg); padding: 0 28px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 90; }
+.top-header h1 { font-size: 18px; font-weight: 700; color: #fff; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header-right .avatar-btn { width: 32px; height: 32px; background: var(--accent); border-radius: 50%; border: none; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+.content { padding: 24px 28px 40px; }
+.breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+.breadcrumb a { color: var(--text-muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--text); font-weight: 500; }
+
+/* Card summary */
+.card-summary { background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 20px 24px; margin-bottom: 20px; display: flex; gap: 24px; align-items: center; }
+.card-mini { background: linear-gradient(135deg, #1e3a5f, #3a6ea5); border-radius: 8px; padding: 14px 18px; color: #fff; width: 220px; flex-shrink: 0; }
+.card-mini .num { font-size: 14px; letter-spacing: 2px; font-family: "Courier New", monospace; }
+.card-mini .sub { font-size: 10px; opacity: .7; margin-top: 4px; }
+.card-summary-info { display: flex; gap: 24px; }
+.card-summary-info .item .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+.card-summary-info .item .value { font-size: 15px; font-weight: 600; margin-top: 2px; }
+
+.status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.status-normal { background: var(--success-light); color: var(--success); }
+.status-frozen { background: #f0f4ff; color: var(--primary); }
+.status-canceled { background: var(--danger-light); color: var(--danger); }
+
+/* Operation cards */
+.op-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
+.op-card { background: var(--card-bg); border: 2px solid var(--border); border-radius: var(--radius-lg); padding: 24px; transition: all .2s; cursor: pointer; }
+.op-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.op-card.freeze { border-left: 4px solid var(--primary); }
+.op-card.unfreeze { border-left: 4px solid var(--success); }
+.op-card.cancel { border-left: 4px solid var(--danger); }
+.op-card .op-icon { font-size: 28px; margin-bottom: 8px; }
+.op-card .op-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.op-card .op-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+
+/* Modal */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.5); z-index: 1000; align-items: center; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal { background: var(--card-bg); border-radius: var(--radius-lg); width: 480px; max-width: 90vw; box-shadow: var(--shadow-lg); }
+.modal-header { padding: 20px 24px 0; display: flex; justify-content: space-between; align-items: flex-start; }
+.modal-header .icon-big { font-size: 36px; margin-bottom: 8px; }
+.modal-header h2 { font-size: 17px; font-weight: 700; margin-top: 8px; }
+.modal-header p { font-size: 13px; color: var(--text-muted); margin-top: 4px; line-height: 1.5; }
+.modal-close { width: 28px; height: 28px; border: none; background: #f5f5f5; border-radius: 6px; font-size: 16px; cursor: pointer; color: var(--text-muted); flex-shrink: 0; }
+.modal-body { padding: 16px 24px 24px; }
+.modal-body .form-group { margin-bottom: 14px; }
+.modal-body .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.modal-body .form-group input, .modal-body .form-group textarea { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none; }
+.modal-body .form-group input:focus, .modal-body .form-group textarea:focus { border-color: var(--accent); }
+.modal-warning { background: var(--danger-light); border: 1px solid #fecaca; border-radius: var(--radius); padding: 12px 14px; margin-bottom: 16px; font-size: 12.5px; color: var(--danger); line-height: 1.6; }
+.modal-info { background: #f0f4ff; border: 1px solid #c7d2fe; border-radius: var(--radius); padding: 12px 14px; margin-bottom: 16px; font-size: 12.5px; color: var(--primary); line-height: 1.6; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 18px; border-radius: 8px; border: none; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all .15s; white-space: nowrap; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-accent { background: var(--accent); color: #fff; }
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: #4338ca; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">Y</div>
+      <span class="logo-text">YASBe</span>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-item"><span class="icon">📊</span> Dashboard</div>
+      <div class="nav-item"><span class="icon">👥</span> Customer Management</div>
+      <div class="nav-item"><span class="icon">💵</span> Fiat Management</div>
+      <div class="nav-item"><span class="icon">₿</span> Crypto Management</div>
+      <div class="nav-item"><span class="icon">🔄</span> Exchange Management</div>
+      <div class="nav-item active" style="margin-top:4px;"><span class="icon">💳</span> Card Management</div>
+      <div class="nav-sub">
+        <div class="nav-item"><span class="icon">🔗</span> Upstream Management</div>
+        <div class="nav-item"><span class="icon">⚙️</span> Card Service Management</div>
+        <div class="nav-item"><span class="icon">📋</span> Card List Management</div>
+        <div class="nav-item"><span class="icon">📈</span> Transaction Snapshot</div>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="avatar">YX</div>
+      <div class="user-info">
+        <div class="name">Driven Xie</div>
+        <div style="font-size:11px;color:var(--sidebar-text);">Admin</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="top-header">
+      <div>
+        <h1>Card Operations</h1>
+      </div>
+      <div class="header-right">
+        <div class="avatar-btn">YX</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="breadcrumb">
+        <a href="#">Card List Management</a>
+        <span>›</span>
+        <a href="#">Card Detail</a>
+        <span>›</span>
+        <span>Operations</span>
+      </div>
+
+      <!-- Card Summary -->
+      <div class="card-summary">
+        <div class="card-mini">
+          <div class="num">**** **** **** 5755</div>
+          <div class="sub">Visa Business Debit</div>
+        </div>
+        <div class="card-summary-info">
+          <div class="item">
+            <div class="label">Status</div>
+            <div class="value"><span class="status-badge status-normal">● Normal</span></div>
+          </div>
+          <div class="item">
+            <div class="label">Balance</div>
+            <div class="value">$98.00</div>
+          </div>
+          <div class="item">
+            <div class="label">Cardholder</div>
+            <div class="value">John Doe</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Operation Cards -->
+      <div class="op-grid">
+
+        <!-- Freeze -->
+        <div class="op-card freeze" onclick="showModal('freeze')">
+          <div class="op-icon">⏸️</div>
+          <div class="op-title">Freeze Card</div>
+          <div class="op-desc">Temporarily freeze the card. All transactions will be blocked until unfrozen. This action is reversible.</div>
+        </div>
+
+        <!-- Unfreeze -->
+        <div class="op-card unfreeze" onclick="showModal('unfreeze')">
+          <div class="op-icon">▶️</div>
+          <div class="op-title">Unfreeze Card</div>
+          <div class="op-desc">Restore a frozen card to normal status. All card functions will resume after unfreezing.</div>
+        </div>
+
+        <!-- Cancel -->
+        <div class="op-card cancel" onclick="showModal('cancel')">
+          <div class="op-icon">⛔</div>
+          <div class="op-title">Cancel Card</div>
+          <div class="op-desc">Permanently cancel the card. This action is irreversible. Any remaining balance will be returned.</div>
+        </div>
+
+      </div>
+
+      <!-- Freeze Modal -->
+      <div class="modal-overlay" id="freezeModal">
+        <div class="modal">
+          <div class="modal-header">
+            <div>
+              <div class="icon-big">⏸️</div>
+              <h2>Freeze Card</h2>
+              <p>This will temporarily suspend all transactions on this card.</p>
+            </div>
+            <button class="modal-close" onclick="hideModal('freezeModal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-info">
+              ℹ️ The cardholder will not be able to make any payments while the card is frozen. The card can be unfrozen at any time.
+            </div>
+            <div class="form-group">
+              <label>Reason for Freezing <span style="color:var(--danger);">*</span></label>
+              <textarea rows="2" placeholder="e.g. Suspicious activity, card lost, temporary hold"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="hideModal('freezeModal')">Cancel</button>
+            <button class="btn btn-primary">Confirm Freeze</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unfreeze Modal -->
+      <div class="modal-overlay" id="unfreezeModal">
+        <div class="modal">
+          <div class="modal-header">
+            <div>
+              <div class="icon-big">▶️</div>
+              <h2>Unfreeze Card</h2>
+              <p>Restore this card to normal operating status.</p>
+            </div>
+            <button class="modal-close" onclick="hideModal('unfreezeModal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-info">
+              ℹ️ After unfreezing, the card will resume normal functionality. The cardholder can start making payments again.
+            </div>
+            <div class="form-group">
+              <label>Reason for Unfreezing</label>
+              <textarea rows="2" placeholder="e.g. Issue resolved, card recovered"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="hideModal('unfreezeModal')">Cancel</button>
+            <button class="btn btn-primary">Confirm Unfreeze</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cancel Modal -->
+      <div class="modal-overlay" id="cancelModal">
+        <div class="modal">
+          <div class="modal-header">
+            <div>
+              <div class="icon-big">⛔</div>
+              <h2>Cancel Card</h2>
+              <p>Permanently cancel this card. This action <strong>cannot be undone</strong>.</p>
+            </div>
+            <button class="modal-close" onclick="hideModal('cancelModal')">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-warning">
+              ⚠️ Cancellation is irreversible. The remaining balance of <strong>$98.00</strong> will be returned to the platform wallet. The cardholder will lose access to this card immediately.
+            </div>
+            <div class="form-group">
+              <label>Reason for Cancellation <span style="color:var(--danger);">*</span></label>
+              <textarea rows="2" placeholder="e.g. Card lost, business closure, replacement requested"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Type "CANCEL" to confirm <span style="color:var(--danger);">*</span></label>
+              <input type="text" placeholder="Type CANCEL" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="hideModal('cancelModal')">Cancel</button>
+            <button class="btn btn-danger" disabled>Confirm Cancel</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function showModal(type) {
+  document.getElementById(type + 'Modal').classList.add('show');
+}
+function hideModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YASBe - 开卡</title>
+<style>
+:root {
+  --sidebar-bg: #1a1a2e;
+  --sidebar-text: #8e9ab4;
+  --sidebar-hover: #2a2a4e;
+  --header-bg: #1a2536;
+  --bg: #f0f2f5;
+  --card-bg: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #888;
+  --accent: #E59303;
+  --accent-hover: #d08400;
+  --primary: #4f46e5;
+  --primary-light: #eef2ff;
+  --success: #16a34a;
+  --success-light: #f0fdf4;
+  --danger: #dc2626;
+  --border: #e5e7eb;
+  --shadow: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.14);
+  --radius: 10px;
+  --radius-lg: 14px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+
+.app { display: flex; min-height: 100vh; }
+.sidebar { width: 220px; flex-shrink: 0; background: var(--sidebar-bg); min-height: 100vh; display: flex; flex-direction: column; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; }
+.sidebar-logo { padding: 20px 16px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,.06); }
+.logo-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: #fff; }
+.logo-text { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: .5px; }
+.sidebar-nav { flex: 1; padding: 12px 8px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: var(--sidebar-text); font-size: 13.5px; cursor: pointer; transition: all .15s; }
+.nav-item:hover { background: var(--sidebar-hover); color: #fff; }
+.nav-item.active { background: rgba(255,255,255,.1); color: #fff9c4; font-weight: 600; }
+.nav-item .icon { font-size: 16px; }
+.nav-sub { padding-left: 12px; }
+.nav-sub .nav-item { font-size: 12.5px; padding: 7px 12px; }
+.sidebar-footer { padding: 12px 16px; border-top: 1px solid rgba(255,255,255,.06); display: flex; align-items: center; gap: 10px; }
+.avatar { width: 34px; height: 34px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.user-info { overflow: hidden; }
+.user-info .name { font-size: 13px; color: #fff; font-weight: 500; }
+
+.main { margin-left: 220px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
+.top-header { background: var(--header-bg); padding: 0 28px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 90; }
+.top-header h1 { font-size: 18px; font-weight: 700; color: #fff; }
+.page-desc { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 2px; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header-right .avatar-btn { width: 32px; height: 32px; background: var(--accent); border-radius: 50%; border: none; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+.content { padding: 24px 28px 40px; }
+
+/* Breadcrumb */
+.breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+.breadcrumb a { color: var(--text-muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--text); font-weight: 500; }
+
+/* Progress Steps */
+.steps { display: flex; justify-content: center; gap: 0; margin-bottom: 32px; position: relative; max-width: 700px; margin-left: auto; margin-right: auto; }
+.step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+.step-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; background: #e5e7eb; color: #9ca3af; position: relative; z-index: 2; transition: all .2s; }
+.step.active .step-circle { background: var(--accent); color: #fff; box-shadow: 0 0 0 4px rgba(229,147,3,.15); }
+.step.done .step-circle { background: var(--success); color: #fff; }
+.step-label { font-size: 11px; color: var(--text-muted); margin-top: 6px; white-space: nowrap; }
+.step.active .step-label { color: var(--text); font-weight: 600; }
+.step-line { position: absolute; top: 18px; left: calc(50% + 18px); right: calc(-50% + 18px); height: 2px; background: #e5e7eb; z-index: 1; }
+.step.done .step-line, .step.active .step-line { background: var(--success); }
+
+/* Form Card */
+.form-card { background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 28px 32px; max-width: 780px; margin: 0 auto; }
+.form-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.form-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.form-group label .required { color: var(--danger); margin-left: 2px; }
+.form-group input[type="text"], .form-group input[type="email"], .form-group input[type="number"], .form-group select { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13.5px; outline: none; transition: border .15s; }
+.form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+.form-group .hint { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+/* Card Product Selection */
+.product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.product-card { border: 2px solid var(--border); border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all .2s; background: var(--card-bg); }
+.product-card:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow); }
+.product-card.selected { border-color: var(--accent); background: #fffbf0; }
+.product-card .product-name { font-size: 14px; font-weight: 700; }
+.product-card .product-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.product-card .product-meta { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.product-card .tag { font-size: 10.5px; padding: 2px 8px; border-radius: 4px; background: #f0f4ff; color: var(--primary); font-weight: 600; }
+
+/* Checkbox & Toggle */
+.checkbox-group { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+.checkbox-label { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; cursor: pointer; }
+.checkbox-label input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; }
+
+/* Notice Box */
+.notice-box { background: #fffbf0; border: 1px solid #fde68a; border-radius: var(--radius); padding: 14px 16px; margin: 16px 0; }
+.notice-box .notice-title { font-size: 13px; font-weight: 600; color: #92400e; margin-bottom: 6px; }
+.notice-box .notice-text { font-size: 12px; color: #78716c; line-height: 1.6; }
+
+/* Summary */
+.summary-box { background: #f9fafb; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin: 16px 0; }
+.summary-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; }
+.summary-row.total { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 10px; font-weight: 700; font-size: 15px; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 18px; border-radius: 8px; border: none; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all .15s; white-space: nowrap; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
+.btn-accent { background: var(--accent); color: #fff; }
+.btn-accent:hover { background: var(--accent-hover); }
+.btn-secondary { background: #e5e7eb; color: var(--text); }
+.btn-secondary:hover { background: #d1d5db; }
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-lg { padding: 12px 24px; font-size: 15px; }
+.btn.full { width: 100%; }
+.btn-group { display: flex; gap: 10px; margin-top: 24px; justify-content: space-between; }
+
+/* Modal */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.5); z-index: 1000; align-items: center; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal { background: var(--card-bg); border-radius: var(--radius-lg); width: 520px; max-width: 90vw; max-height: 80vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+.modal-header { padding: 20px 24px 0; display: flex; justify-content: space-between; align-items: center; }
+.modal-header h2 { font-size: 17px; font-weight: 700; }
+.modal-close { width: 28px; height: 28px; border: none; background: #f5f5f5; border-radius: 6px; font-size: 16px; cursor: pointer; color: var(--text-muted); }
+.modal-body { padding: 16px 24px 24px; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+
+/* Chain select */
+.chain-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.chain-option { border: 2px solid var(--border); border-radius: var(--radius); padding: 12px; text-align: center; cursor: pointer; transition: all .2s; }
+.chain-option:hover { border-color: var(--accent); }
+.chain-option.selected { border-color: var(--accent); background: #fffbf0; }
+.chain-option .chain-icon { font-size: 24px; margin-bottom: 6px; }
+.chain-option .chain-name { font-size: 12.5px; font-weight: 600; }
+.chain-option .chain-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* Info alert */
+.info-alert { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #eef2ff; border-radius: 8px; font-size: 12.5px; color: var(--primary); margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">Y</div>
+      <span class="logo-text">YASBe</span>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-item"><span class="icon">📊</span> Dashboard</div>
+      <div class="nav-item"><span class="icon">👥</span> Customer Management</div>
+      <div class="nav-item"><span class="icon">💵</span> Fiat Management</div>
+      <div class="nav-item"><span class="icon">₿</span> Crypto Management</div>
+      <div class="nav-item"><span class="icon">🔄</span> Exchange Management</div>
+      <div class="nav-item active" style="margin-top:4px;"><span class="icon">💳</span> Card Management</div>
+      <div class="nav-sub">
+        <div class="nav-item"><span class="icon">🔗</span> Upstream Management</div>
+        <div class="nav-item"><span class="icon">⚙️</span> Card Service Management</div>
+        <div class="nav-item"><span class="icon">📋</span> Card List Management</div>
+        <div class="nav-item"><span class="icon">📈</span> Transaction Snapshot</div>
+      </div>
+      <div class="nav-item" style="margin-top:4px;"><span class="icon">📄</span> Content</div>
+      <div class="nav-item"><span class="icon">🛡️</span> Risk Management</div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="avatar">YX</div>
+      <div class="user-info">
+        <div class="name">Driven Xie</div>
+        <div style="font-size:11px;color:var(--sidebar-text);">Admin</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Header -->
+    <div class="top-header">
+      <div>
+        <h1>Create Cards</h1>
+        <div class="page-desc">Batch create virtual cards for your business</div>
+      </div>
+      <div class="header-right">
+        <div class="avatar-btn">YX</div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="#">Card List Management</a>
+        <span>›</span>
+        <span>Create Cards</span>
+      </div>
+
+      <!-- Steps -->
+      <div class="steps">
+        <div class="step done">
+          <div class="step-circle">✓</div>
+          <div class="step-line"></div>
+          <div class="step-label">Select Card</div>
+        </div>
+        <div class="step active">
+          <div class="step-circle">2</div>
+          <div class="step-line"></div>
+          <div class="step-label">Holder Info</div>
+        </div>
+        <div class="step">
+          <div class="step-circle">3</div>
+          <div class="step-line"></div>
+          <div class="step-label">Terms & Notice</div>
+        </div>
+        <div class="step">
+          <div class="step-circle">4</div>
+          <div class="step-line"></div>
+          <div class="step-label">Payment</div>
+        </div>
+        <div class="step">
+          <div class="step-circle">5</div>
+          <div class="step-label">Confirm</div>
+        </div>
+      </div>
+
+      <!-- Form Card -->
+      <div class="form-card">
+
+        <!-- Step 1: Select Card -->
+        <div id="step1">
+          <div class="form-title">Select Card Product</div>
+          <div class="form-subtitle">Choose the card type and brand for your batch</div>
+
+          <div class="product-grid">
+            <div class="product-card selected" onclick="selectProduct(this)">
+              <div class="product-name">💳 Visa Business Debit</div>
+              <div class="product-desc">Virtual business debit card, supported globally</div>
+              <div class="product-meta">
+                <span class="tag">Visa</span>
+                <span class="tag">Debit</span>
+                <span class="tag">Global</span>
+              </div>
+            </div>
+            <div class="product-card" onclick="selectProduct(this)">
+              <div class="product-name">💳 Mastercard Business</div>
+              <div class="product-desc">Virtual business card with Mastercard network</div>
+              <div class="product-meta">
+                <span class="tag">Mastercard</span>
+                <span class="tag">Debit</span>
+                <span class="tag">Global</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Holder Info -->
+        <div id="step2">
+          <div class="form-title">Cardholder Information</div>
+          <div class="form-subtitle">Enter cardholder details. The system will automatically distribute cards (max 20 cards per holder)</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Total Cards to Create <span class="required">*</span></label>
+              <input type="number" placeholder="e.g. 50" min="1" max="100" />
+              <div class="hint">Max 100 cards per batch. Each cardholder holds max 20 cards.</div>
+            </div>
+            <div class="form-group">
+              <label>Batch Name <span class="required">*</span></label>
+              <input type="text" placeholder="e.g. Q3 Employee Cards" />
+              <div class="hint">Give your batch a recognizable name</div>
+            </div>
+          </div>
+
+          <div style="margin:16px 0 8px;"><strong>Primary Cardholder</strong></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name <span class="required">*</span></label>
+              <input type="text" placeholder="John" />
+            </div>
+            <div class="form-group">
+              <label>Last Name <span class="required">*</span></label>
+              <input type="text" placeholder="Doe" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email <span class="required">*</span></label>
+              <input type="email" placeholder="john@company.com" />
+            </div>
+            <div class="form-group">
+              <label>Date of Birth <span class="required">*</span></label>
+              <input type="text" placeholder="YYYY-MM-DD" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Address Line 1 <span class="required">*</span></label>
+            <input type="text" placeholder="123 Main Street" />
+          </div>
+          <div class="form-row-3">
+            <div class="form-group">
+              <label>City <span class="required">*</span></label>
+              <input type="text" placeholder="New York" />
+            </div>
+            <div class="form-group">
+              <label>State <span class="required">*</span></label>
+              <input type="text" placeholder="NY" />
+            </div>
+            <div class="form-group">
+              <label>Postal Code <span class="required">*</span></label>
+              <input type="text" placeholder="10001" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Country <span class="required">*</span></label>
+              <select>
+                <option>United States</option>
+                <option>United Kingdom</option>
+                <option>Singapore</option>
+                <option>Hong Kong</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Identification Type <span class="required">*</span></label>
+              <select>
+                <option>Passport</option>
+                <option>National ID</option>
+                <option>Driver License</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Identification Value <span class="required">*</span></label>
+            <input type="text" placeholder="Passport / ID number" />
+          </div>
+
+          <div class="info-alert">
+            ℹ️ The system will automatically create the required number of cardholders based on the card quantity (max 20 cards per cardholder). Additional cardholders will be created with indexed names.
+          </div>
+        </div>
+
+        <!-- Step 3: Terms & Notice -->
+        <div id="step3">
+          <div class="form-title">Terms & Notice</div>
+          <div class="form-subtitle">Please read the following terms carefully before proceeding</div>
+
+          <div class="notice-box">
+            <div class="notice-title">📋 Card Issuance Agreement</div>
+            <div class="notice-text">
+              1. These cards are issued under the partnership between YASBe and the upstream card issuer.<br>
+              2. Each cardholder is limited to a maximum of 20 cards.<br>
+              3. All cards require activation before use (cardholder name, email, and initial top-up amount required).<br>
+              4. The card issuer reserves the right to freeze or cancel cards in case of non-compliance.<br>
+              5. Card fees will be charged according to the selected card product's fee schedule.<br>
+              6. KYC/KYB information must be kept up to date. Outdated information may result in card suspension.<br>
+              7. Unactivated cards will be automatically canceled after 30 days.
+            </div>
+          </div>
+
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" /> I have read and agree to the <a href="#" style="color:var(--accent);">Card Issuance Agreement</a>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" /> I confirm that all cardholder information provided is accurate and complete
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" /> I understand that unactivated cards will be automatically canceled after 30 days
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 4: Payment Chain -->
+        <div id="step4">
+          <div class="form-title">Select Payment Chain</div>
+          <div class="form-subtitle">Choose the blockchain network for the card issuance fee payment</div>
+
+          <div class="info-alert">
+            💰 Issuance Fee: <strong>$2.50 per card</strong> | Total: <strong>$125.00</strong> (50 cards)
+          </div>
+
+          <div class="chain-options">
+            <div class="chain-option selected" onclick="selectChain(this)">
+              <div class="chain-icon">₿</div>
+              <div class="chain-name">Bitcoin</div>
+              <div class="chain-desc">BTC network</div>
+            </div>
+            <div class="chain-option" onclick="selectChain(this)">
+              <div class="chain-icon">⟠</div>
+              <div class="chain-name">Ethereum</div>
+              <div class="chain-desc">ERC-20</div>
+            </div>
+            <div class="chain-option" onclick="selectChain(this)">
+              <div class="chain-icon">◆</div>
+              <div class="chain-name">Polygon</div>
+              <div class="chain-desc">MATIC</div>
+            </div>
+            <div class="chain-option" onclick="selectChain(this)">
+              <div class="chain-icon">✧</div>
+              <div class="chain-name">Solana</div>
+              <div class="chain-desc">SOL</div>
+            </div>
+            <div class="chain-option" onclick="selectChain(this)">
+              <div class="chain-icon">◈</div>
+              <div class="chain-name">TRON</div>
+              <div class="chain-desc">TRC-20</div>
+            </div>
+            <div class="chain-option" onclick="selectChain(this)">
+              <div class="chain-icon">◇</div>
+              <div class="chain-name">BSC</div>
+              <div class="chain-desc">BEP-20</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5: Confirm & Summary -->
+        <div id="step5">
+          <div class="form-title">Confirmation</div>
+          <div class="form-subtitle">Review your batch creation details before confirming</div>
+
+          <div class="summary-box">
+            <div class="summary-row"><span>Card Product</span><span>Visa Business Debit</span></div>
+            <div class="summary-row"><span>Batch Name</span><span>Q3 Employee Cards</span></div>
+            <div class="summary-row"><span>Total Cards</span><span>50</span></div>
+            <div class="summary-row"><span>Cardholders to Create</span><span>3 (20+20+10)</span></div>
+            <div class="summary-row"><span>Payment Chain</span><span>Bitcoin (BTC)</span></div>
+            <div class="summary-row"><span>Issuance Fee per Card</span><span>$2.50</span></div>
+            <div class="summary-row total"><span>Total Issuance Fee</span><span>$125.00</span></div>
+          </div>
+
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" /> I confirm all the above information is correct and I acknowledge the associated fees
+            </label>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-group">
+          <div>
+            <button class="btn btn-outline">← Back</button>
+          </div>
+          <div>
+            <button class="btn btn-secondary">Save Draft</button>
+            <button class="btn btn-accent" style="margin-left:8px;">Next →</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function selectProduct(el) {
+  document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function selectChain(el) {
+  document.querySelectorAll('.chain-option').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+</script>
+
+</body>
+</html>
