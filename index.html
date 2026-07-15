@@ -1,1 +1,269 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Card Management Prototypes</title><meta name="viewport" content="width=device-width"><style>:root{--a:#E59303;--bg:#0f1117;--card:#1a1d27;--text:#e5e7eb;--muted:#8b8fa3}*{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:40px 20px}.wrap{max-width:720px;margin:0 auto}h1{font-size:28px;margin-bottom:6px}sub{color:var(--muted);font-size:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}a{display:flex;flex-direction:column;padding:18px 20px;background:var(--card);border-radius:12px;text-decoration:none;color:var(--text);border:1px solid transparent;transition:all .15s}a:hover{border-color:var(--a);transform:translateY(-2px)}.num{font-size:11px;color:var(--muted);margin-bottom:4px}.name{font-size:15px;font-weight:600;margin-bottom:6px}.desc{font-size:12px;color:var(--muted);line-height:1.4}footer{text-align:center;margin-top:40px;font-size:12px;color:var(--muted)}</style></head><body><div class="wrap"><h1>💳 Card Management</h1><sub>B-side Card Module Prototypes · YASBe Platform</sub><div class="grid"><a href="index.html"><span class="num">01</span><span class="name">📋 Card List</span><span class="desc">Card list with search, status filter, stats bar. Supports card number & cardholder name search.</span></a><a href="create-card.html"><span class="num">02</span><span class="name">➕ Create Card</span><span class="desc">5-step flow: select card product → cardholder info → T&Cs → payment chain → quantity.</span></a><a href="card-detail.html"><span class="num">03</span><span class="name">🔍 Card Detail</span><span class="desc">Card information panel + action buttons + transaction history.</span></a><a href="activate.html"><span class="num">04</span><span class="name">✅ Activate Card</span><span class="desc">Card activation form: cardholder name, email, initial top-up amount.</span></a><a href="bills.html"><span class="num">05</span><span class="name">🧾 Card Bills</span><span class="desc">Full transaction history with filters, tabs, and export. Includes all transaction snapshot fields.</span></a><a href="operations.html"><span class="num">06</span><span class="name">⚡ Card Operations</span><span class="desc">Freeze / Unfreeze / Cancel with confirmation modals and reason input.</span></a></div><footer>YASBe Card Module · Design Prototypes v1.0</footer></div></body></html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YASBe - 卡片管理</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:#191b1f;color:#e8e8ed;font-size:14px;line-height:1.5}
+
+/* ===== Layout ===== */
+.app{display:flex;min-height:100vh}
+.sidebar{width:220px;flex-shrink:0;background:#2c2c2c;min-height:100vh;display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:100}
+.sidebar-logo{padding:20px 16px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.06)}
+.logo-icon{width:32px;height:32px;background:#FFCA00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#000}
+.logo-text{font-size:17px;font-weight:700;color:#fff;letter-spacing:.5px}
+.sidebar-nav{flex:1;padding:12px 8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:#848493;font-size:13.5px;cursor:pointer;transition:all .15s}
+.nav-item:hover{background:rgba(255,255,255,.08);color:#e8e8ed}
+.nav-item.active{background:rgba(255,202,0,.12);color:#FFCA00;font-weight:600}
+.nav-item .icon{font-size:16px}
+.sidebar-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px}
+.avatar{width:34px;height:34px;background:#FFCA00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000;flex-shrink:0}
+.user-info{overflow:hidden}
+.user-info .name{font-size:13px;color:#fff;font-weight:500}
+.user-info div:last-child{font-size:11px;color:#848493}
+
+.main{margin-left:220px;flex:1;min-height:100vh;display:flex;flex-direction:column}
+.top-header{background:#2c2c2c;padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:90}
+.top-header h1{font-size:18px;font-weight:700;color:#fff}
+.top-header-right{display:flex;align-items:center;gap:12px}
+.notif{background:none;border:none;font-size:18px;cursor:pointer;position:relative;padding:4px;color:#848493}
+.notif .dot{position:absolute;top:2px;right:2px;width:7px;height:7px;background:#dc2626;border-radius:50%;border:2px solid #2c2c2c}
+.avatar-btn{width:32px;height:32px;background:#FFCA00;border-radius:50%;border:none;color:#000;font-size:12px;font-weight:700;cursor:pointer}
+
+.content{padding:24px 28px;flex:1}
+
+/* ===== Cards ===== */
+.card{background:#1f2128;border-radius:12px;border:1px solid rgba(255,255,255,.06);overflow:hidden}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.06)}
+.card-header h2{font-size:15px;font-weight:600;color:#e8e8ed}
+.card-body{padding:20px}
+
+/* ===== Stats Bar ===== */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.stat-card{background:#1f2128;border-radius:10px;border:1px solid rgba(255,255,255,.06);padding:18px 20px}
+.stat-card .label{font-size:12px;color:#848493;margin-bottom:6px}
+.stat-card .value{font-size:24px;font-weight:700;color:#fff}
+.stat-card .sub{font-size:11px;color:#848493;margin-top:4px}
+.stat-card .value.gold{color:#FFCA00}
+
+/* ===== Tabs ===== */
+.tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tab{padding:10px 20px;font-size:13px;color:#848493;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.tab:hover{color:#e8e8ed}
+.tab.active{color:#FFCA00;border-bottom-color:#FFCA00;font-weight:600}
+
+/* ===== Filter Bar ===== */
+.filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.filter-bar input,.filter-bar select{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#e8e8ed;font-size:13px;padding:8px 12px;outline:none;transition:border .15s}
+.filter-bar input:focus,.filter-bar select:focus{border-color:#FFCA00}
+.filter-bar input{width:200px}
+.filter-bar input::placeholder{color:#5a5a6a}
+.filter-bar select{width:150px;cursor:pointer}
+.filter-bar select option{background:#2c2c2c;color:#e8e8ed}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:none;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+.btn-primary{background:#FFCA00;color:#000}
+.btn-primary:hover{background:#e6b500}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,.15);color:#848493}
+.btn-outline:hover{border-color:#FFCA00;color:#FFCA00}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-xs{padding:4px 8px;font-size:11px;border-radius:6px}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.btn-warning{background:#d97706;color:#fff}
+.btn-warning:hover{background:#b45309}
+.btn-success{background:#16a34a;color:#fff}
+.btn-success:hover{background:#15803d}
+
+/* ===== Table ===== */
+table{width:100%;border-collapse:collapse}
+table th{text-align:left;padding:12px 16px;font-size:12px;font-weight:600;color:#848493;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid rgba(255,255,255,.06);white-space:nowrap}
+table td{padding:12px 16px;font-size:13px;color:#e8e8ed;border-bottom:1px solid rgba(255,255,255,.04)}
+table tr:hover td{background:rgba(255,202,0,.03)}
+table tr:last-child td{border-bottom:none}
+
+/* ===== Badges ===== */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-active{background:rgba(22,163,74,.15);color:#4ade80}
+.badge-inactive{background:rgba(100,116,139,.15);color:#94a3b8}
+.badge-frozen{background:rgba(217,119,6,.15);color:#fbbf24}
+.badge-pending{background:rgba(59,130,246,.15);color:#60a5fa}
+.badge-canceled{background:rgba(220,38,38,.15);color:#f87171}
+.badge-draft{background:rgba(100,116,139,.1);color:#64748b}
+
+/* ===== Empty ===== */
+.empty-state{text-align:center;padding:60px 20px;color:#848493}
+.empty-state .icon{font-size:48px;margin-bottom:12px;opacity:.3}
+.empty-state p{font-size:14px;margin-bottom:16px}
+.empty-state .btn{margin-top:4px}
+
+/* ===== Card Number ===== */
+.card-num{font-family:"SF Mono","Fira Code","Consolas",monospace;font-size:13px;letter-spacing:.5px}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">Y</div>
+      <div class="logo-text">YASBe</div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-item"><span class="icon">📊</span> Dashboard</div>
+      <div class="nav-item active"><span class="icon">💳</span> 卡片管理</div>
+      <div class="nav-item"><span class="icon">📋</span> 账单记录</div>
+      <div class="nav-item"><span class="icon">🏦</span> 银行账户</div>
+      <div class="nav-item"><span class="icon">🔒</span> 安全设置</div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="avatar">DX</div>
+      <div class="user-info">
+        <div class="name">Driven Xie</div>
+        <div>企业用户</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Top Header -->
+    <div class="top-header">
+      <h1>卡片管理</h1>
+      <div class="top-header-right">
+        <button class="notif">🔔<span class="dot"></span></button>
+        <div class="avatar-btn">DX</div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Stats Bar -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="label">总余额</div>
+          <div class="value gold">$128,450.00</div>
+          <div class="sub">所有卡片合计</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">总消费</div>
+          <div class="value">$45,230.50</div>
+          <div class="sub">本月累计</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">卡片数量</div>
+          <div class="value">24</div>
+          <div class="sub">共 3 个持卡人</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">昨日开卡</div>
+          <div class="value">5</div>
+          <div class="sub">新卡已创建</div>
+        </div>
+      </div>
+
+      <!-- Card Section -->
+      <div class="card">
+        <div class="card-header">
+          <h2>我的卡片</h2>
+          <button class="btn btn-primary" onclick="alert('开卡流程')">+ 开卡</button>
+        </div>
+        <div class="card-body">
+          <!-- Tabs -->
+          <div class="tabs">
+            <div class="tab active">我的卡片</div>
+            <div class="tab">开卡申请</div>
+          </div>
+
+          <!-- Filter Bar -->
+          <div class="filter-bar">
+            <input type="text" placeholder="搜索卡号后4位或持卡人姓名...">
+            <select>
+              <option value="">全部状态</option>
+              <option>待激活</option>
+              <option>已激活</option>
+              <option>已冻结</option>
+              <option>已注销</option>
+            </select>
+            <button class="btn btn-outline btn-sm">搜索</button>
+            <button class="btn btn-outline btn-sm">重置</button>
+          </div>
+
+          <!-- Table -->
+          <table>
+            <thead>
+              <tr>
+                <th>卡片号码</th>
+                <th>持卡人</th>
+                <th>余额</th>
+                <th>可用余额</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="card-num">**** **** **** 4523</span></td>
+                <td>张三</td>
+                <td>$5,000.00</td>
+                <td>$4,850.00</td>
+                <td><span class="badge badge-active">已激活</span></td>
+                <td>
+                  <button class="btn btn-outline btn-xs">详情</button>
+                  <button class="btn btn-warning btn-xs">冻结</button>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="card-num">**** **** **** 7812</span></td>
+                <td>李四</td>
+                <td>$2,300.00</td>
+                <td>$2,100.00</td>
+                <td><span class="badge badge-active">已激活</span></td>
+                <td>
+                  <button class="btn btn-outline btn-xs">详情</button>
+                  <button class="btn btn-warning btn-xs">冻结</button>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="card-num">**** **** **** 3356</span></td>
+                <td>张三</td>
+                <td>$0.00</td>
+                <td>$0.00</td>
+                <td><span class="badge badge-pending">待激活</span></td>
+                <td>
+                  <button class="btn btn-outline btn-xs">详情</button>
+                  <button class="btn btn-success btn-xs">激活</button>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="card-num">**** **** **** 9012</span></td>
+                <td>王五</td>
+                <td>$1,200.00</td>
+                <td>$0.00</td>
+                <td><span class="badge badge-frozen">已冻结</span></td>
+                <td>
+                  <button class="btn btn-outline btn-xs">详情</button>
+                  <button class="btn btn-outline btn-xs">解冻</button>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="card-num">**** **** **** 6678</span></td>
+                <td>赵六</td>
+                <td>$0.00</td>
+                <td>$0.00</td>
+                <td><span class="badge badge-canceled">已注销</span></td>
+                <td>
+                  <button class="btn btn-outline btn-xs">详情</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
