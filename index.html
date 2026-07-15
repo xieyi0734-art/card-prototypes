@@ -1071,14 +1071,27 @@ function updateSummary() {
 
 function submitIssue() {
   const qty = parseInt(document.getElementById('issue-qty').value) || 0;
-  const holders = Math.ceil(qty / 20);
-  alert('开卡申请已提交！\n' +
-    '卡产品: Visa 商务卡\n' +
-    '开卡张数: ' + qty + '\n' +
-    '创建持卡人: ' + holders + ' 个\n' +
-    '扣款金额: USDT ' + (qty * 2.5).toFixed(2) + '\n\n' +
-    '开卡完成后将以通知告知。');
   closeIssueModal();
+  showIssueSubmittedModal(qty);
+}
+
+function showIssueSubmittedModal(qty) {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.style.cssText = 'display:flex;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center';
+  overlay.innerHTML = '<div style="background:#1f2128;border-radius:12px;padding:32px;width:420px;max-width:90vw;text-align:center;border:1px solid rgba(255,255,255,.1)">' +
+    '<div style="font-size:48px;margin-bottom:16px">✅</div>' +
+    '<h3 style="color:#fff;font-size:18px;margin-bottom:12px">开卡申请已提交</h3>' +
+    '<div style="color:#848493;font-size:14px;line-height:1.8;margin-bottom:24px">' +
+    '开卡张数: <strong style="color:#fff">' + qty + '</strong> 张<br>' +
+    '开卡流程为异步处理，请耐心等候。<br>' +
+    '开卡完成后将通过邮件通知您。</div>' +
+    '<button onclick="this.closest(\'.modal-overlay\').remove()" style="background:#FFCA00;color:#000;border:none;border-radius:8px;padding:10px 28px;font-size:14px;font-weight:600;cursor:pointer">我知道了</button>' +
+    '</div>';
+  overlay.addEventListener('click', function(e) {
+    if(e.target === this) this.remove();
+  });
+  document.body.appendChild(overlay);
 }
 
 // Close issue modal on overlay click
