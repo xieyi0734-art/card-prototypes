@@ -1080,18 +1080,27 @@ function showIssueSubmittedModal(qty) {
   overlay.className = 'modal-overlay';
   overlay.style.cssText = 'display:flex;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center';
   overlay.innerHTML = '<div style="background:#1f2128;border-radius:12px;padding:32px;width:420px;max-width:90vw;text-align:center;border:1px solid rgba(255,255,255,.1)">' +
-    '<div style="font-size:48px;margin-bottom:16px">✅</div>' +
+    '<div style="font-size:48px;margin-bottom:16px">🕐</div>' +
     '<h3 style="color:#fff;font-size:18px;margin-bottom:12px">开卡申请已提交</h3>' +
-    '<div style="color:#848493;font-size:14px;line-height:1.8;margin-bottom:24px">' +
+    '<div style="color:#848493;font-size:14px;line-height:1.8;margin-bottom:6px">' +
     '开卡张数: <strong style="color:#fff">' + qty + '</strong> 张<br>' +
-    '开卡流程为异步处理，请耐心等候。<br>' +
+    '系统正在处理中，预计 5-10 分钟完成。<br>' +
     '开卡完成后将通过邮件通知您。</div>' +
-    '<button onclick="this.closest(\'.modal-overlay\').remove()" style="background:#FFCA00;color:#000;border:none;border-radius:8px;padding:10px 28px;font-size:14px;font-weight:600;cursor:pointer">我知道了</button>' +
+    '<div style="margin-bottom:24px"><a href="#" onclick="switchToCards();this.closest(\'.modal-overlay\').remove();return false" style="color:#FFCA00;font-size:13px;text-decoration:none">查看开卡进度 →</a></div>' +
+    '<button onclick="switchToCards();this.closest(\'.modal-overlay\').remove()" style="background:#FFCA00;color:#000;border:none;border-radius:8px;padding:10px 28px;font-size:14px;font-weight:600;cursor:pointer">查看我的卡片</button>' +
     '</div>';
   overlay.addEventListener('click', function(e) {
     if(e.target === this) this.remove();
   });
   document.body.appendChild(overlay);
+}
+
+function switchToCards() {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab')[1].classList.add('active');
+  document.getElementById('tab-transactions').style.display = 'none';
+  document.getElementById('tab-cards').style.display = '';
+  document.getElementById('tab-kyb').style.display = 'none';
 }
 
 // Close issue modal on overlay click
