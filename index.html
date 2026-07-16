@@ -1086,8 +1086,7 @@ function showIssueSubmittedModal(qty) {
     '开卡张数: <strong style="color:#fff">' + qty + '</strong> 张<br>' +
     '系统正在处理中，预计 5-10 分钟完成。<br>' +
     '开卡完成后将通过邮件通知您。</div>' +
-    '<div style="margin-bottom:24px"><a href="#" onclick="switchToCards();this.closest(\'.modal-overlay\').remove();return false" style="color:#FFCA00;font-size:13px;text-decoration:none">查看开卡进度 →</a></div>' +
-    '<button onclick="switchToCards();this.closest(\'.modal-overlay\').remove()" style="background:#FFCA00;color:#000;border:none;border-radius:8px;padding:10px 28px;font-size:14px;font-weight:600;cursor:pointer">查看我的卡片</button>' +
+    '<button onclick="this.closest(\'.modal-overlay\').remove()" style="background:#FFCA00;color:#000;border:none;border-radius:8px;padding:10px 28px;font-size:14px;font-weight:600;cursor:pointer">我知道了</button>' +
     '</div>';
   overlay.addEventListener('click', function(e) {
     if(e.target === this) this.remove();
