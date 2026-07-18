@@ -656,7 +656,7 @@ table tr:last-child td{border-bottom:none}
                 <div class="steps-indicator">
                   <div class="step-dot active" data-step="1">
                     <span class="circle">1</span>
-                    <span class="step-label">开卡人信息</span>
+                    <span class="step-label">持卡人检查</span>
                   </div>
                   <div class="step-connector"></div>
                   <div class="step-dot" data-step="2">
@@ -671,85 +671,58 @@ table tr:last-child td{border-bottom:none}
                 </div>
               </div>
 
-              <!-- ===== Step 1: 开卡人信息 ===== -->
+              <!-- ===== Step 1: 持卡人检查 / 创建 ===== -->
               <div id="step-1" class="step-panel active">
                 <div class="modal-body">
-                  <form id="cardholder-form">
+                  <!-- 有可用额度时显示 -->
+                  <div id="cardholder-available" style="display:none">
                     <div class="form-section">
-                      <h4>开卡人基本信息</h4>
-                      <div class="form-row">
-                        <div class="form-group">
-                          <label>名字 <span class="required">*</span></label>
-                          <input type="text" name="firstName" placeholder="John" required>
+                      <div style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:16px;text-align:center;margin-bottom:16px">
+                        <div style="font-size:40px;margin-bottom:8px">✅</div>
+                        <div style="color:#22c55e;font-size:15px;font-weight:600;margin-bottom:4px">已有可用持卡人</div>
+                        <div style="color:#848493;font-size:13px">
+                          当前持卡人可开卡额度：<strong id="remaining-cards" style="color:#fff">5</strong> 张
                         </div>
-                        <div class="form-group">
-                          <label>姓氏 <span class="required">*</span></label>
-                          <input type="text" name="lastName" placeholder="Smith" required>
-                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 无可用额度时，需创建新持卡人 -->
+                  <div id="cardholder-create-form" style="display:none">
+                    <div class="form-section">
+                      <h4>创建新持卡人</h4>
+                      <div style="background:rgba(255,202,0,.08);border:1px solid rgba(255,202,0,.15);border-radius:8px;padding:10px 14px;font-size:12px;color:#e8e8ed;margin-bottom:16px">
+                        当前持卡人额度已用满，请创建新持卡人后继续开卡。已填写的信息将自动同步到新持卡人。
                       </div>
                       <div class="form-group">
                         <label>邮箱 <span class="required">*</span></label>
-                        <input type="email" name="email" placeholder="user@company.com" required>
+                        <input type="email" id="new-holder-email" placeholder="new_cardholder@company.com" required>
                       </div>
                       <div class="form-row">
                         <div class="form-group">
                           <label>国际区号 <span class="required">*</span></label>
                           <div class="form-hint">不要 + 号</div>
-                          <input type="text" name="phoneCountryCode" placeholder="86" maxlength="3" required>
+                          <input type="text" id="new-holder-phone-code" placeholder="86" value="86" maxlength="3" required>
                         </div>
                         <div class="form-group">
                           <label>手机号 <span class="required">*</span></label>
-                          <input type="text" name="phoneNumber" placeholder="13800138000" required>
+                          <input type="text" id="new-holder-phone" placeholder="13800138000" required>
                         </div>
                       </div>
                       <div class="form-group">
-                        <label>出生日期 <span class="required">*</span></label>
-                        <div class="form-hint">YYYY-MM-DD 格式</div>
-                        <input type="text" name="dob" placeholder="1990-01-01" required>
-                      </div>
-                      <div class="form-group">
-                        <label>持卡人角色 <span class="required">*</span></label>
-                        <select name="cardholderRole" required>
-                          <option value="">请选择</option>
-                          <option value="DEPARTMENT">部门 (DEPARTMENT)</option>
-                          <option value="PROJECT">项目 (PROJECT)</option>
-                          <option value="AUTHORIZED_REPRESENTATIVE">授权代表 (AUTHORIZED_REPRESENTATIVE)</option>
-                        </select>
+                        <label>证件号 (National ID) <span class="required">*</span></label>
+                        <input type="text" id="new-holder-nid" placeholder="ID_123456" required>
                       </div>
                     </div>
-                    <div class="form-section">
-                      <h4>地址信息</h4>
-                      <div class="form-group">
-                        <label>街道地址 <span class="required">*</span></label>
-                        <input type="text" name="addressLine1" placeholder="123 Main Street" required>
-                      </div>
-                      <div class="form-row">
-                        <div class="form-group">
-                          <label>城市 <span class="required">*</span></label>
-                          <input type="text" name="city" placeholder="New York" required>
-                        </div>
-                        <div class="form-group">
-                          <label>州/省 <span class="required">*</span></label>
-                          <input type="text" name="state" placeholder="NY" required>
-                        </div>
-                      </div>
-                      <div class="form-row">
-                        <div class="form-group">
-                          <label>国家 <span class="required">*</span></label>
-                          <div class="form-hint">ISO 3166-1 alpha-2</div>
-                          <input type="text" name="country" placeholder="US" maxlength="2" required>
-                        </div>
-                        <div class="form-group">
-                          <label>邮政编码 <span class="required">*</span></label>
-                          <input type="text" name="postalCode" placeholder="10001" required>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
+                  </div>
+                  <!-- 加载状态 -->
+                  <div id="cardholder-loading" style="display:none;text-align:center;padding:32px 0">
+                    <div style="font-size:40px;margin-bottom:12px">⏳</div>
+                    <div style="color:#848493;font-size:14px">正在检查可用持卡人...</div>
+                  </div>
                 </div>
                 <div class="step-nav">
                   <div></div>
-                  <button class="btn-next" onclick="goStep(2)">下一步</button>
+                  <button id="step1-next-btn" class="btn-next" onclick="goStep(2)" style="display:none">下一步</button>
                 </div>
               </div>
 
@@ -771,7 +744,7 @@ table tr:last-child td{border-bottom:none}
                       <div style="font-size:11px;color:#5a5a6a">每张卡开卡费以选择的链和实际 gas 为准</div>
                     </div>
                     <div style="margin-bottom:8px">
-                      <label style="font-size:12px;font-weight:500;color:#a0a0b0;margin-bottom:8px;display:block">每持卡人最多 20 张卡，系统将自动创建持卡人。</label>
+                      <label style="font-size:12px;font-weight:500;color:#a0a0b0;margin-bottom:8px;display:block">每持卡人最多 20 张卡，超出将自动创建新持卡人。</label>
                       <div id="cardholder-preview" style="background:rgba(255,202,0,.06);border:1px solid rgba(255,202,0,.15);border-radius:8px;padding:10px 14px;font-size:12px;color:#e8e8ed">
                         <span>预计创建 <strong id="holder-count">1</strong> 个持卡人，每持卡人 <strong id="per-holder">1</strong> 张卡</span>
                       </div>
@@ -973,12 +946,21 @@ document.getElementById('activate-modal-overlay').addEventListener('click', func
 
 // ===== Issue Card Modal (3 Steps) =====
 let currentStep = 1;
+let hasAvailableCardholder = false; // 模拟 API 返回
 
 function openIssueModal() {
   currentStep = 1;
   document.getElementById('issue-modal-overlay').style.display = 'flex';
   document.body.style.overflow = 'hidden';
-  showStep(1);
+  
+  // 模拟：查询可用持卡人
+  simulateCheckCardholder();
+  
+  // Reset form fields
+  document.getElementById('new-holder-email').value = '';
+  document.getElementById('new-holder-phone-code').value = '86';
+  document.getElementById('new-holder-phone').value = '';
+  document.getElementById('new-holder-nid').value = '';
   document.getElementById('issue-qty').value = 1;
   updateQtyCost();
   // Reset checkboxes
@@ -989,6 +971,30 @@ function openIssueModal() {
   document.querySelectorAll('.crypto-option').forEach((el, i) => {
     el.classList.toggle('selected', i === 0);
   });
+}
+
+function simulateCheckCardholder() {
+  // 显示加载状态
+  document.getElementById('cardholder-loading').style.display = '';
+  document.getElementById('cardholder-available').style.display = 'none';
+  document.getElementById('cardholder-create-form').style.display = 'none';
+  document.getElementById('step1-next-btn').style.display = 'none';
+  showStep(1);
+
+  // 模拟 1.5 秒后返回结果（有可用额度）
+  setTimeout(() => {
+    document.getElementById('cardholder-loading').style.display = 'none';
+    // 模拟：80% 概率有可用额度
+    hasAvailableCardholder = Math.random() > 0.2;
+    if (hasAvailableCardholder) {
+      document.getElementById('cardholder-available').style.display = '';
+      const remaining = Math.floor(Math.random() * 15) + 5;
+      document.getElementById('remaining-cards').textContent = remaining;
+    } else {
+      document.getElementById('cardholder-create-form').style.display = '';
+    }
+    document.getElementById('step1-next-btn').style.display = '';
+  }, 1500);
 }
 
 function closeIssueModal() {
@@ -1019,18 +1025,20 @@ function showStep(step) {
 }
 
 function goStep(step) {
-  // Validate step 1 fields before going to step 2
+  // Validate step 1 before going to step 2
   if(step === 2 && currentStep === 1) {
-    const form = document.getElementById('cardholder-form');
-    const inputs = form.querySelectorAll('[required]');
-    let valid = true;
-    inputs.forEach(inp => {
-      if(!inp.value.trim()) valid = false;
-    });
-    if(!valid) {
-      alert('请填写所有必填字段');
-      return;
+    if (!hasAvailableCardholder) {
+      // 需要创建持卡人，验证表单
+      const email = document.getElementById('new-holder-email').value.trim();
+      const phoneCode = document.getElementById('new-holder-phone-code').value.trim();
+      const phone = document.getElementById('new-holder-phone').value.trim();
+      const nid = document.getElementById('new-holder-nid').value.trim();
+      if(!email || !phoneCode || !phone || !nid) {
+        alert('请填写持卡人的邮箱、电话和证件号');
+        return;
+      }
     }
+    // 有可用额度时直接通过，无需验证
   }
   // Validate step 2 before going to step 3
   if(step === 3 && currentStep === 2) {
@@ -1090,22 +1098,35 @@ function updateSummary() {
 
 function submitIssue() {
   const qty = parseInt(document.getElementById('issue-qty').value) || 0;
+  const selected = document.querySelector('.crypto-option.selected');
+  const coinCode = selected ? selected.querySelector('.crypto-name').textContent : 'USDT';
+  const blockChain = selected ? selected.querySelector('.crypto-chain').textContent : 'Ethereum (ERC-20)';
+  
   closeIssueModal();
-  showIssueSubmittedModal(qty);
+  showIssueSubmittedModal(qty, coinCode, blockChain, hasAvailableCardholder);
 }
 
-function showIssueSubmittedModal(qty) {
+function showIssueSubmittedModal(qty, coinCode, blockChain, hadAvailable) {
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.style.cssText = 'display:flex;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center';
-  overlay.innerHTML = '<div style="background:#1f2128;border-radius:12px;padding:32px;width:420px;max-width:90vw;text-align:center;border:1px solid rgba(255,255,255,.1)">' +
-    '<div style="font-size:48px;margin-bottom:16px">🕐</div>' +
-    '<h3 style="color:#fff;font-size:18px;margin-bottom:12px">开卡申请已提交</h3>' +
-    '<div style="color:#848493;font-size:14px;line-height:1.8;margin-bottom:6px">' +
-    '开卡张数: <strong style="color:#fff">' + qty + '</strong> 张<br>' +
-    '系统正在处理中，预计 5-10 分钟完成。<br>' +
-    '开卡完成后将通过邮件通知您。</div>' +
-    '<button onclick="this.closest(\'.modal-overlay\').remove()" style="background:#FFCA00;color:#000;border:none;border-radius:8px;padding:10px 28px;font-size:14px;font-weight:600;cursor:pointer">我知道了</button>' +
+  
+  const cardholderInfo = hadAvailable
+    ? '<span style="color:#22c55e">已有可用持卡人</span>'
+    : '<span style="color:#FFCA00">已创建新持卡人</span>';
+  
+  overlay.innerHTML = '<div style="background:#1f2128;border-radius:12px;padding:32px;width:440px;max-width:90vw;border:1px solid rgba(255,255,255,.1)">' +
+    '<div style="font-size:48px;margin-bottom:16px;text-align:center">🕐</div>' +
+    '<h3 style="color:#fff;font-size:18px;margin-bottom:16px;text-align:center">开卡申请已提交</h3>' +
+    '<div style="background:rgba(255,255,255,.03);border-radius:8px;padding:14px 16px;margin-bottom:16px">' +
+    '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span style="color:#848493">开卡张数</span><span style="color:#fff;font-weight:500">' + qty + ' 张</span></div>' +
+    '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span style="color:#848493">持卡人</span><span style="color:#fff;font-weight:500">' + cardholderInfo + '</span></div>' +
+    '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span style="color:#848493">扣款币种</span><span style="color:#fff;font-weight:500">' + coinCode + '</span></div>' +
+    '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span style="color:#848493">网络</span><span style="color:#fff;font-weight:500">' + blockChain + '</span></div>' +
+    '<div style="display:flex;justify-content:space-between;font-size:13px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08)"><span style="color:#848493">系统处理</span><span style="color:#e8e8ed;font-weight:500">预计 5-10 分钟</span></div>' +
+    '</div>' +
+    '<div style="color:#848493;font-size:13px;text-align:center;line-height:1.6;margin-bottom:18px">开卡完成后将通过邮件通知您。</div>' +
+    '<div style="text-align:center"><button onclick="this.closest(\'.modal-overlay\').remove()" style="background:#FFCA00;color:#000;border:none;border-radius:8px;padding:10px 28px;font-size:14px;font-weight:600;cursor:pointer">我知道了</button></div>' +
     '</div>';
   overlay.addEventListener('click', function(e) {
     if(e.target === this) this.remove();
